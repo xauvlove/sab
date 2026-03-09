@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sleepstory.backend.dal.mapper.UserProfileMapper">
+
+    <resultMap id="BaseResultMap" type="com.sleepstory.backend.dal.po.UserProfilePO">
+        <id column="user_id" property="userId"/>
+        <result column="sleep_time" property="sleepTime"/>
+        <result column="preferred_duration" property="preferredDuration"/>
+        <result column="preferred_categories" property="preferredCategories"/>
+        <result column="streak_days" property="streakDays"/>
+        <result column="total_stories_listened" property="totalStoriesListened"/>
+        <result column="total_listening_minutes" property="totalListeningMinutes"/>
+        <result column="last_listened_at" property="lastListenedAt"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        user_id, sleep_time, preferred_duration, preferred_categories,
+        streak_days, total_stories_listened, total_listening_minutes,
+        last_listened_at, created_at, updated_at
+    </sql>
+
+    <insert id="insert" parameterType="com.sleepstory.backend.dal.po.UserProfilePO">
+        INSERT INTO user_profiles (
+            user_id, sleep_time, preferred_duration, preferred_categories,
+            streak_days, total_stories_listened, total_listening_minutes,
+            last_listened_at, created_at, updated_at
+        ) VALUES (
+            #{userId}, #{sleepTime}, #{preferredDuration}, #{preferredCategories},
+            #{streakDays}, #{totalStoriesListened}, #{totalListeningMinutes},
+            #{lastListenedAt}, #{createdAt}, #{updatedAt}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.sleepstory.backend.dal.po.UserProfilePO">
+        UPDATE user_profiles
+        SET sleep_time = #{sleepTime},
+            preferred_duration = #{preferredDuration},
+            preferred_categories = #{preferredCategories},
+            streak_days = #{streakDays},
+            total_stories_listened = #{totalStoriesListened},
+            total_listening_minutes = #{totalListeningMinutes},
+            last_listened_at = #{lastListenedAt},
+            updated_at = #{updatedAt}
+        WHERE user_id = #{userId}
+    </update>
+
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM user_profiles
+        WHERE user_id = #{userId}
+    </select>
+
+    <update id="incrementStreak">
+        UPDATE user_profiles
+        SET streak_days = streak_days + 1, updated_at = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="resetStreak">
+        UPDATE user_profiles
+        SET streak_days = 0, updated_at = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="recordListening">
+        UPDATE user_profiles
+        SET total_stories_listened = total_stories_listened + 1,
+            total_listening_minutes = total_listening_minutes + #{minutes},
+            last_listened_at = NOW(),
+            updated_at = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <delete id="deleteByUserId">
+        DELETE FROM user_profiles WHERE user_id = #{userId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">眠语</string>
+    <string name="app_name_en">SleepStory</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">首页</string>
+    <string name="nav_discover">发现</string>
+    <string name="nav_generate">创作</string>
+    <string name="nav_favorites">收藏</string>
+    <string name="nav_profile">我的</string>
+    
+    <!-- Home -->
+    <string name="welcome_evening">晚上好</string>
+    <string name="welcome_morning">早上好</string>
+    <string name="welcome_afternoon">下午好</string>
+    <string name="what_story_tonight">今晚想听什么故事？</string>
+    <string name="quick_sleep_mode">快速入睡模式</string>
+    <string name="recommended_tonight">今晚推荐</string>
+    
+    <!-- Assessment -->
+    <string name="assessment_progress">评估进度</string>
+    <string name="next_step">下一步</string>
+    <string name="previous_step">上一步</string>
+    <string name="complete">完成</string>
+    
+    <!-- Generate -->
+    <string name="custom_story">定制你的专属故事</string>
+    <string name="ai_will_create">AI将根据你的选择创作独一无二的故事</string>
+    <string name="keywords">故事关键词</string>
+    <string name="keywords_hint">例如：星空、猫咪、温暖的茶...</string>
+    <string name="select_scene">选择场景</string>
+    <string name="story_mood">故事基调</string>
+    <string name="story_length">故事长度</string>
+    <string name="start_generate">开始生成</string>
+    
+    <!-- Generating -->
+    <string name="creating_story">正在创作你的专属故事</string>
+    <string name="ai_weaving">AI正在根据你的偏好编织梦境\n请稍候...</string>
+    <string name="tip_breathe">💡 小贴士：深呼吸，放松身心\n故事即将为你呈现</string>
+    
+    <!-- Player -->
+    <string name="now_playing">正在播放</string>
+    <string name="favorite">收藏</string>
+    <string name="timer">定时</string>
+    <string name="share">分享</string>
+    <string name="speed">语速</string>
+    <string name="sleep_mode">睡眠模式已开启</string>
+    <string name="sleep_mode_desc">将在故事结束后自动关闭</string>
+    
+    <!-- Profile -->
+    <string name="sleep_stats">睡眠统计</string>
+    <string name="avg_sleep">平均睡眠(小时)</string>
+    <string name="stories_listened">听完故事</string>
+    <string name="success_rate">入睡成功率</string>
+    <string name="sleep_reminder">睡眠提醒</string>
+    <string name="my_favorites">我的收藏</string>
+    <string name="sleep_report">睡眠报告</string>
+    <string name="preferences">偏好设置</string>
+    <string name="feedback">反馈与建议</string>
+    
+    <!-- Categories -->
+    <string name="category_nature">自然</string>
+    <string name="category_fantasy">奇幻</string>
+    <string name="category_meditation">冥想</string>
+    <string name="category_scifi">科幻</string>
+    <string name="category_classic">经典</string>
+    <string name="category_warm">温暖</string>
+    
+    <!-- Durations -->
+    <string name="duration_short">短篇</string>
+    <string name="duration_medium">中篇</string>
+    <string name="duration_long">长篇</string>
+    <string name="minutes_5_10">5-10分钟</string>
+    <string name="minutes_15_30">15-30分钟</string>
+    <string name="minutes_30_60">30-60分钟</string>
+    
+    <!-- Welcome -->
+    <string name="welcome_title">欢迎来到眠语</string>
+    <string name="welcome_subtitle">让我们一起探索属于你的\n专属助眠故事</string>
+    <string name="feature_personalize">个性化定制</string>
+    <string name="feature_personalize_desc">根据你的喜好生成专属故事</string>
+    <string name="feature_ai">AI智能创作</string>
+    <string name="feature_ai_desc">每次都有新鲜独特的内容</string>
+    <string name="feature_immersive">沉浸式体验</string>
+    <string name="feature_immersive_desc">舒缓配音配合白噪音</string>
+    <string name="start_experience">开始体验</string>
+    
+    <!-- Splash -->
+    <string name="tagline">用故事编织梦境\n让心灵归于宁静</string>
+    <string name="users_helped">已帮助 128,000+ 人改善睡眠</string>
+</resources>
