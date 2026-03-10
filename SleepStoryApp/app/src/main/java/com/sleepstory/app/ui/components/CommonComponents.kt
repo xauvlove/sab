@@ -245,6 +245,7 @@ fun BottomNavigationBar(
         NavItem("home", "首页", Icons.Default.Home),
         NavItem("discover", "发现", Icons.Default.Search),
         NavItem("generate", "创作", Icons.Default.AddCircle),
+        NavItem("favorites", "收藏", Icons.Default.Favorite),
         NavItem("profile", "我的", Icons.Default.Person)
     )
 

@@ -1,11 +1,17 @@
 package com.sleepstory.backend.api.controller;
 
-import com.sleepstory.backend.api.dto.*;
+import com.sleepstory.backend.api.dto.Result;
+import com.sleepstory.backend.api.dto.request.UserPreferenceRequest;
+import com.sleepstory.backend.api.dto.response.UserPreferenceResponse;
+import com.sleepstory.backend.api.dto.response.UserStatsResponse;
+import com.sleepstory.backend.infrastructure.security.JwtTokenProvider;
 import com.sleepstory.backend.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * 用户控制器
@@ -17,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     /**
      * 获取用户睡眠统计
@@ -108,12 +115,42 @@ public class UserController {
     }
 
     /**
+     * 获取播放历史
+     */
+    @GetMapping("/play-history")
+    public Result<List<Map<String, Object>>> getPlayHistory(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @RequestParam(defaultValue = "20") int limit,
+            @RequestParam(defaultValue = "0") int offset) {
+        try {
+            String userId = extractUserId(authHeader);
+            if (userId == null) {
+                return Result.unauthorized("请先登录");
+            }
+
+            List<Map<String, Object>> history = userService.getPlayHistory(userId, limit, offset);
+            return Result.success(history);
+        } catch (Exception e) {
+            log.error("获取播放历史失败", e);
+            return Result.error("获取失败");
+        }
+    }
+
+    /**
      * 从Token中提取用户ID
      */
     private String extractUserId(String authHeader) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            return token.isEmpty() ? null : token;
+            if (token.isEmpty()) {
+                return null;
+            }
+            try {
+                return jwtTokenProvider.getUserIdFromToken(token);
+            } catch (Exception e) {
+                log.warn("Invalid token: {}", e.getMessage());
+                return null;
+            }
         }
         return null;
     }

@@ -22,7 +22,9 @@ public interface PlayHistoryMapper {
     /**
      * 获取用户播放历史
      */
-    List<Map<String, Object>> selectByUserId(@Param("userId") String userId);
+    List<Map<String, Object>> selectByUserId(@Param("userId") String userId,
+                                               @Param("limit") int limit,
+                                               @Param("offset") int offset);
 
     /**
      * 获取本周播放统计

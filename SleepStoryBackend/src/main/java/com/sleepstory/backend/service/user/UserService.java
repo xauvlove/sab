@@ -1,8 +1,8 @@
 package com.sleepstory.backend.service.user;
 
-import com.sleepstory.backend.api.dto.UserPreferenceRequest;
-import com.sleepstory.backend.api.dto.UserPreferenceResponse;
-import com.sleepstory.backend.api.dto.UserStatsResponse;
+import com.sleepstory.backend.api.dto.request.UserPreferenceRequest;
+import com.sleepstory.backend.api.dto.response.UserPreferenceResponse;
+import com.sleepstory.backend.api.dto.response.UserStatsResponse;
 import com.sleepstory.backend.dal.mapper.PlayHistoryMapper;
 import com.sleepstory.backend.dal.mapper.UserPreferenceMapper;
 import com.sleepstory.backend.dal.mapper.UserProfileMapper;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -112,6 +113,27 @@ public class UserService {
             userProfileMapper.updateTotalListeningMinutes(userId, totalMinutes);
             userProfileMapper.updateTotalStoriesListened(userId, totalStories);
         }
+    }
+
+    /**
+     * 获取播放历史
+     */
+    public List<Map<String, Object>> getPlayHistory(String userId, int limit, int offset) {
+        List<Map<String, Object>> rawHistory = playHistoryMapper.selectByUserId(userId, limit, offset);
+        List<Map<String, Object>> history = new ArrayList<>();
+
+        for (Map<String, Object> item : rawHistory) {
+            Map<String, Object> entry = new HashMap<>();
+            entry.put("id", item.get("id"));
+            entry.put("storyId", item.get("story_id"));
+            entry.put("storyTitle", item.get("story_title"));
+            entry.put("duration", item.get("duration_listened"));
+            entry.put("completed", item.get("completed"));
+            entry.put("playedAt", item.get("played_at"));
+            history.add(entry);
+        }
+
+        return history;
     }
 
     /**

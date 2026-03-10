@@ -9,13 +9,13 @@
 
     <select id="selectByUserId" resultType="map">
         SELECT ph.id, ph.user_id as userId, ph.story_id as storyId,
-               ph.duration_listened as durationListened, ph.created_at as createdAt,
-               s.title, s.icon, s.duration
+               ph.duration_listened as durationListened, ph.created_at as playedAt,
+               s.title as storyTitle, s.icon, s.duration
         FROM play_history ph
         INNER JOIN stories s ON ph.story_id = s.id
         WHERE ph.user_id = #{userId}
         ORDER BY ph.created_at DESC
-        LIMIT 50
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="selectWeeklyStats" resultType="map">

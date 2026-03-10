@@ -1,8 +1,8 @@
 package com.sleepstory.backend.service.user;
 
-import com.sleepstory.backend.api.dto.AuthResponse;
-import com.sleepstory.backend.api.dto.LoginRequest;
-import com.sleepstory.backend.api.dto.RegisterRequest;
+import com.sleepstory.backend.api.dto.response.AuthResponse;
+import com.sleepstory.backend.api.dto.request.LoginRequest;
+import com.sleepstory.backend.api.dto.request.RegisterRequest;
 import com.sleepstory.backend.domain.entity.User;
 import com.sleepstory.backend.domain.entity.UserProfile;
 import com.sleepstory.backend.domain.repository.UserProfileRepository;
@@ -172,5 +172,39 @@ public class UserAuthService {
             return phone;
         }
         return phone.substring(0, 3) + "****" + phone.substring(7);
+    }
+
+    /**
+     * 检查手机号是否已注册
+     */
+    public boolean checkPhone(String phone) {
+        return userRepository.existsByPhone(phone);
+    }
+
+    /**
+     * 获取用户信息
+     */
+    public AuthResponse.UserInfo getUserInfo(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("用户不存在"));
+        
+        return AuthResponse.UserInfo.builder()
+                .id(user.getId())
+                .phone(maskPhone(user.getPhone()))
+                .nickname(user.getNickname())
+                .avatarUrl(user.getAvatarUrl())
+                .createdAt(user.getCreatedAt())
+                .build();
+    }
+
+    /**
+     * 刷新Token
+     */
+    public AuthResponse refreshToken(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("用户不存在"));
+        
+        String token = jwtTokenProvider.generateToken(user.getId(), user.getPhone());
+        return buildAuthResponse(user, token);
     }
 }

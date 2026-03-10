@@ -11,12 +11,14 @@ import com.sleepstory.app.ui.screens.auth.LoginScreen
 import com.sleepstory.app.ui.screens.auth.RegisterScreen
 import com.sleepstory.app.ui.screens.auth.SmsLoginScreen
 import com.sleepstory.app.ui.screens.discover.DiscoverScreen
+import com.sleepstory.app.ui.screens.favorites.FavoritesScreen
 import com.sleepstory.app.ui.screens.generate.GenerateScreen
 import com.sleepstory.app.ui.screens.generating.GeneratingScreen
 import com.sleepstory.app.ui.screens.home.HomeScreen
 import com.sleepstory.app.ui.screens.player.PlayerScreen
 import com.sleepstory.app.ui.screens.profile.ProfileScreen
 import com.sleepstory.app.ui.screens.splash.SplashScreen
+import com.sleepstory.app.ui.screens.story.StoryDetailScreen
 import com.sleepstory.app.ui.screens.welcome.WelcomeScreen
 
 sealed class Screen(val route: String) {
@@ -36,6 +38,10 @@ sealed class Screen(val route: String) {
         fun createRoute(storyId: String) = "player/$storyId"
     }
     object Profile : Screen("profile")
+    object Favorites : Screen("favorites")
+    object StoryDetail : Screen("story/{storyId}") {
+        fun createRoute(storyId: String) = "story/$storyId"
+    }
 }
 
 @Composable
@@ -174,6 +180,25 @@ fun SleepStoryNavHost(navController: NavHostController) {
 
         composable(Screen.Profile.route) {
             ProfileScreen(
+                navController = navController
+            )
+        }
+
+        composable(Screen.Favorites.route) {
+            FavoritesScreen(
+                navController = navController
+            )
+        }
+
+        composable(
+            route = Screen.StoryDetail.route,
+            arguments = listOf(
+                navArgument("storyId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val storyId = backStackEntry.arguments?.getString("storyId") ?: ""
+            StoryDetailScreen(
+                storyId = storyId,
                 navController = navController
             )
         }

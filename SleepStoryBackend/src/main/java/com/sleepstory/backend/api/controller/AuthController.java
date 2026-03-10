@@ -1,6 +1,12 @@
 package com.sleepstory.backend.api.controller;
 
-import com.sleepstory.backend.api.dto.*;
+import com.sleepstory.backend.api.dto.Result;
+import com.sleepstory.backend.api.dto.request.LoginRequest;
+import com.sleepstory.backend.api.dto.request.RegisterRequest;
+import com.sleepstory.backend.api.dto.request.SendCodeRequest;
+import com.sleepstory.backend.api.dto.request.SmsLoginRequest;
+import com.sleepstory.backend.api.dto.response.AuthResponse;
+import com.sleepstory.backend.infrastructure.security.JwtTokenProvider;
 import com.sleepstory.backend.service.sms.SmsAuthService;
 import com.sleepstory.backend.service.sms.SmsService;
 import com.sleepstory.backend.service.user.UserAuthService;
@@ -23,6 +29,7 @@ public class AuthController {
     private final UserAuthService userAuthService;
     private final SmsService smsService;
     private final SmsAuthService smsAuthService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     /**
      * 用户注册
@@ -115,9 +122,7 @@ public class AuthController {
             }
 
             String token = authHeader.substring(7);
-            // TODO: 从token中解析userId
-            // 这里简化处理，实际应该使用JWT解析
-            String userId = extractUserIdFromToken(token);
+            String userId = jwtTokenProvider.getUserIdFromToken(token);
 
             AuthResponse.UserInfo userInfo = userAuthService.getUserInfo(userId);
             return Result.success(userInfo);
@@ -141,7 +146,7 @@ public class AuthController {
                 return Result.unauthorized("未提供有效的认证信息");
             }
             String token = authHeader.substring(7);
-            String userId = extractUserIdFromToken(token);
+            String userId = jwtTokenProvider.getUserIdFromToken(token);
             AuthResponse response = userAuthService.refreshToken(userId);
             return Result.success(response);
         } catch (RuntimeException e) {
@@ -159,8 +164,8 @@ public class AuthController {
     @GetMapping("/check-phone")
     public Result<Boolean> checkPhone(@RequestParam String phone) {
         try {
-            // TODO: 实现检查逻辑
-            return Result.success(false);
+            boolean exists = userAuthService.checkPhone(phone);
+            return Result.success(exists);
         } catch (Exception e) {
             log.error("Check phone error: {}", e.getMessage(), e);
             return Result.error("检查失败");
@@ -176,14 +181,5 @@ public class AuthController {
             return xForwardedFor.split(",")[0].trim();
         }
         return request.getRemoteAddr();
-    }
-
-    /**
-     * 从Token中提取用户ID
-     * TODO: 实际应该使用JWT解析
-     */
-    private String extractUserIdFromToken(String token) {
-        // 临时实现，实际应该解析JWT
-        return token;
     }
 }

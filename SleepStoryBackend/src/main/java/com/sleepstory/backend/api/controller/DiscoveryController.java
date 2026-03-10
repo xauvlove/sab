@@ -1,6 +1,9 @@
 package com.sleepstory.backend.api.controller;
 
-import com.sleepstory.backend.api.dto.*;
+import com.sleepstory.backend.api.dto.Result;
+import com.sleepstory.backend.api.dto.response.DiscoveryResponse;
+import com.sleepstory.backend.api.dto.response.StoryDetailResponse;
+import com.sleepstory.backend.api.dto.response.StoryListResponse;
 import com.sleepstory.backend.service.story.DiscoveryService;
 import com.sleepstory.backend.service.story.FavoriteService;
 import lombok.RequiredArgsConstructor;
