@@ -193,9 +193,23 @@ public class AuthController {
      */
     private String getClientIp(HttpServletRequest request) {
         String xForwardedFor = request.getHeader("X-Forwarded-For");
-        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
-            return xForwardedFor.split(",")[0].trim();
+        if (xForwardedFor != null && !xForwardedFor.isEmpty() && !"unknown".equalsIgnoreCase(xForwardedFor)) {
+            // 获取第一个非unknown的IP地址，防止IP欺骗
+            int idx = xForwardedFor.indexOf(",");
+            if (idx != -1) {
+                xForwardedFor = xForwardedFor.substring(0, idx);
+            }
+            xForwardedFor = xForwardedFor.trim();
+            if (!"unknown".equalsIgnoreCase(xForwardedFor)) {
+                return xForwardedFor;
+            }
         }
+        
+        String xRealIP = request.getHeader("X-Real-IP");
+        if (xRealIP != null && !xRealIP.isEmpty() && !"unknown".equalsIgnoreCase(xRealIP)) {
+            return xRealIP.trim();
+        }
+        
         return request.getRemoteAddr();
     }
 }

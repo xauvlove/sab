@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sleepstory.backend.dal.mapper.CommunityStoryMapper">
+
+    <insert id="insert" parameterType="com.sleepstory.backend.domain.entity.CommunityStory" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO community_stories (
+            user_id, title, summary, content, voice_config, category, tags,
+            status, likes_count, plays_count, user_nickname, user_avatar, created_at, updated_at
+        ) VALUES (
+            #{userId}, #{title}, #{summary}, #{content}, #{voiceConfig}, #{category}, #{tags},
+            #{status}, #{likesCount}, #{playsCount}, #{userNickname}, #{userAvatar}, NOW(), NOW()
+        )
+    </insert>
+
+    <select id="selectById" resultType="com.sleepstory.backend.domain.entity.CommunityStory">
+        SELECT id, user_id as userId, title, summary, content, voice_config as voiceConfig,
+               category, tags, status, likes_count as likesCount, plays_count as playsCount,
+               user_nickname as userNickname, user_avatar as userAvatar,
+               created_at as createdAt, updated_at as updatedAt
+        FROM community_stories
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectList" resultType="map">
+        SELECT id, title, summary, category, tags, likes_count as likesCount, plays_count as playsCount,
+               user_nickname as userNickname, user_avatar as userAvatar, created_at as createdAt
+        FROM community_stories
+        WHERE status = 1
+        <if test="category != null and category != ''">
+            AND category = #{category}
+        </if>
+        ORDER BY
+        <choose>
+            <when test="orderBy == 'hot'">
+                likes_count DESC, plays_count DESC
+            </when>
+            <otherwise>
+                created_at DESC
+            </otherwise>
+        </choose>
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="selectByUserId" resultType="map">
+        SELECT id, title, summary, category, tags, likes_count as likesCount, plays_count as playsCount,
+               user_nickname as userNickname, user_avatar as userAvatar, created_at as createdAt
+        FROM community_stories
+        WHERE user_id = #{userId} AND status = 1
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <update id="incrementPlaysCount">
+        UPDATE community_stories
+        SET plays_count = plays_count + 1
+        WHERE id = #{id}
+    </update>
+
+    <update id="incrementLikesCount">
+        UPDATE community_stories
+        SET likes_count = likes_count + 1
+        WHERE id = #{id}
+    </update>
+
+    <update id="decrementLikesCount">
+        UPDATE community_stories
+        SET likes_count = likes_count - 1
+        WHERE id = #{id} AND likes_count > 0
+    </update>
+
+    <update id="update" parameterType="com.sleepstory.backend.domain.entity.CommunityStory">
+        UPDATE community_stories
+        SET title = #{title},
+            summary = #{summary},
+            content = #{content},
+            voice_config = #{voiceConfig},
+            category = #{category},
+            tags = #{tags},
+            status = #{status},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM community_stories WHERE id = #{id}
+    </delete>
+
+    <select id="checkLiked" resultType="Integer">
+        SELECT COUNT(*) FROM story_likes WHERE user_id = #{userId} AND story_id = #{storyId}
+    </select>
+
+    <insert id="insertLike">
+        INSERT INTO story_likes (user_id, story_id, created_at)
+        VALUES (#{userId}, #{storyId}, NOW())
+    </insert>
+
+    <delete id="deleteLike">
+        DELETE FROM story_likes WHERE user_id = #{userId} AND story_id = #{storyId}
+    </delete>
+
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM community_stories WHERE status = 1
+        <if test="category != null and category != ''">
+            AND category = #{category}
+        </if>
+    </select>
+
+</mapper>

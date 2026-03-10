@@ -107,6 +107,13 @@ fun HomeScreen(
                 onClick = { navController.navigate(Screen.Generate.route) }
             )
 
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // 他人创作入口
+            CommunityEntryCard(
+                onClick = { navController.navigate(Screen.Community.route) }
+            )
+
             Spacer(modifier = Modifier.height(24.dp))
 
             // Category tabs

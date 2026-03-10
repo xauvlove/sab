@@ -10,6 +10,8 @@ import com.sleepstory.app.ui.screens.assessment.AssessmentScreen
 import com.sleepstory.app.ui.screens.auth.LoginScreen
 import com.sleepstory.app.ui.screens.auth.RegisterScreen
 import com.sleepstory.app.ui.screens.auth.SmsLoginScreen
+import com.sleepstory.app.ui.screens.community.CommunityScreen
+import com.sleepstory.app.ui.screens.community.CommunityDetailScreen
 import com.sleepstory.app.ui.screens.discover.DiscoverScreen
 import com.sleepstory.app.ui.screens.favorites.FavoritesScreen
 import com.sleepstory.app.ui.screens.generate.GenerateScreen
@@ -41,6 +43,10 @@ sealed class Screen(val route: String) {
     object Favorites : Screen("favorites")
     object StoryDetail : Screen("story/{storyId}") {
         fun createRoute(storyId: String) = "story/$storyId"
+    }
+    object Community : Screen("community")
+    object CommunityDetail : Screen("community/{storyId}") {
+        fun createRoute(storyId: Long) = "community/$storyId"
     }
 }
 
@@ -198,6 +204,25 @@ fun SleepStoryNavHost(navController: NavHostController) {
         ) { backStackEntry ->
             val storyId = backStackEntry.arguments?.getString("storyId") ?: ""
             StoryDetailScreen(
+                storyId = storyId,
+                navController = navController
+            )
+        }
+
+        composable(Screen.Community.route) {
+            CommunityScreen(
+                navController = navController
+            )
+        }
+
+        composable(
+            route = Screen.CommunityDetail.route,
+            arguments = listOf(
+                navArgument("storyId") { type = NavType.LongType }
+            )
+        ) { backStackEntry ->
+            val storyId = backStackEntry.arguments?.getLong("storyId") ?: 0L
+            CommunityDetailScreen(
                 storyId = storyId,
                 navController = navController
             )

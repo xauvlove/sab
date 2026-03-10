@@ -2,6 +2,7 @@ package com.sleepstory.app.di
 
 import com.sleepstory.app.data.api.StoryApiService
 import com.sleepstory.app.data.api.UserApiService
+import com.sleepstory.app.data.api.CommunityApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,12 +25,13 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
         return OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
             .build()
     }
@@ -54,5 +56,11 @@ object NetworkModule {
     @Singleton
     fun provideStoryApiService(retrofit: Retrofit): StoryApiService {
         return retrofit.create(StoryApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCommunityApiService(retrofit: Retrofit): CommunityApiService {
+        return retrofit.create(CommunityApiService::class.java)
     }
 }

@@ -140,7 +140,9 @@ public class SmsService {
      * 生成6位随机验证码
      */
     private String generateCode() {
-        int code = (int) ((Math.random() * 9 + 1) * 100000);
+        // 使用更安全的随机数生成器
+        java.security.SecureRandom random = new java.security.SecureRandom();
+        int code = 100000 + random.nextInt(900000); // 生成100000-999999之间的随机数
         return String.valueOf(code);
     }
 

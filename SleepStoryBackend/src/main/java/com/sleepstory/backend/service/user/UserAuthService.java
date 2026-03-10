@@ -110,34 +110,6 @@ public class UserAuthService {
     }
 
     /**
-     * 根据Token获取用户信息
-     */
-    public AuthResponse.UserInfo getUserInfo(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("用户不存在"));
-
-        return AuthResponse.UserInfo.builder()
-                .id(user.getId())
-                .phone(maskPhone(user.getPhone()))
-                .nickname(user.getNickname())
-                .avatarUrl(user.getAvatarUrl())
-                .createdAt(user.getCreatedAt())
-                .build();
-    }
-
-    /**
-     * 刷新Token
-     */
-    public AuthResponse refreshToken(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("用户不存在"));
-
-        String token = jwtTokenProvider.generateToken(user.getId(), user.getPhone());
-
-        return buildAuthResponse(user, token);
-    }
-
-    /**
      * 构建认证响应
      */
     private AuthResponse buildAuthResponse(User user, String token) {
@@ -184,32 +156,5 @@ public class UserAuthService {
      */
     public boolean checkPhone(String phone) {
         return userRepository.existsByPhone(phone);
-    }
-
-    /**
-     * 获取用户信息
-     */
-    public AuthResponse.UserInfo getUserInfo(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("用户不存在"));
-        
-        return AuthResponse.UserInfo.builder()
-                .id(user.getId())
-                .phone(maskPhone(user.getPhone()))
-                .nickname(user.getNickname())
-                .avatarUrl(user.getAvatarUrl())
-                .createdAt(user.getCreatedAt())
-                .build();
-    }
-
-    /**
-     * 刷新Token
-     */
-    public AuthResponse refreshToken(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("用户不存在"));
-        
-        String token = jwtTokenProvider.generateToken(user.getId(), user.getPhone());
-        return buildAuthResponse(user, token);
     }
 }
