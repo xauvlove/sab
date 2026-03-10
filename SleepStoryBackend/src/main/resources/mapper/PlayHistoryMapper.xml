@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sleepstory.backend.dal.mapper.PlayHistoryMapper">
+
+    <insert id="insert">
+        INSERT INTO play_history (id, user_id, story_id, duration_listened, created_at)
+        VALUES (REPLACE(UUID(), '-', ''), #{userId}, #{storyId}, #{durationListened}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <select id="selectByUserId" resultType="map">
+        SELECT ph.id, ph.user_id as userId, ph.story_id as storyId,
+               ph.duration_listened as durationListened, ph.created_at as createdAt,
+               s.title, s.icon, s.duration
+        FROM play_history ph
+        INNER JOIN stories s ON ph.story_id = s.id
+        WHERE ph.user_id = #{userId}
+        ORDER BY ph.created_at DESC
+        LIMIT 50
+    </select>
+
+    <select id="selectWeeklyStats" resultType="map">
+        SELECT DATE(created_at) as date,
+               SUM(duration_listened) as totalSeconds,
+               COUNT(DISTINCT story_id) as storyCount
+        FROM play_history
+        WHERE user_id = #{userId}
+          AND created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
+        GROUP BY DATE(created_at)
+        ORDER BY date ASC
+    </select>
+
+    <select id="getTotalMinutes" resultType="int">
+        SELECT COALESCE(SUM(duration_listened), 0) / 60
+        FROM play_history
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="getTotalStoriesCount" resultType="int">
+        SELECT COUNT(DISTINCT story_id)
+        FROM play_history
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="getStreakDays" resultType="int">
+        SELECT COUNT(DISTINCT DATE(created_at))
+        FROM play_history
+        WHERE user_id = #{userId}
+          AND created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY)
+    </select>
+
+</mapper>

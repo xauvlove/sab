@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sleepstory.backend.dal.mapper.UserPreferenceMapper">
+
+    <resultMap id="BaseResultMap" type="com.sleepstory.backend.dal.po.UserPreferencePO">
+        <id property="userId" column="user_id"/>
+        <result property="darkMode" column="dark_mode"/>
+        <result property="autoCloseTimer" column="auto_close_timer"/>
+        <result property="volumeLevel" column="volume_level"/>
+        <result property="defaultPlaySpeed" column="default_play_speed"/>
+        <result property="enableNotifications" column="enable_notifications"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="upsert" parameterType="com.sleepstory.backend.dal.po.UserPreferencePO">
+        INSERT INTO user_preferences (user_id, dark_mode, auto_close_timer, volume_level,
+                                     default_play_speed, enable_notifications, created_at, updated_at)
+        VALUES (#{userId}, #{darkMode}, #{autoCloseTimer}, #{volumeLevel},
+                #{defaultPlaySpeed}, #{enableNotifications}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        ON DUPLICATE KEY UPDATE
+            dark_mode = VALUES(dark_mode),
+            auto_close_timer = VALUES(auto_close_timer),
+            volume_level = VALUES(volume_level),
+            default_play_speed = VALUES(default_play_speed),
+            enable_notifications = VALUES(enable_notifications),
+            updated_at = CURRENT_TIMESTAMP
+    </insert>
+
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT user_id, dark_mode, auto_close_timer, volume_level,
+               default_play_speed, enable_notifications, created_at, updated_at
+        FROM user_preferences
+        WHERE user_id = #{userId}
+    </select>
+
+    <update id="updateDarkMode">
+        UPDATE user_preferences
+        SET dark_mode = #{darkMode}, updated_at = CURRENT_TIMESTAMP
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateAutoCloseTimer">
+        UPDATE user_preferences
+        SET auto_close_timer = #{autoCloseTimer}, updated_at = CURRENT_TIMESTAMP
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateVolumeLevel">
+        UPDATE user_preferences
+        SET volume_level = #{volumeLevel}, updated_at = CURRENT_TIMESTAMP
+        WHERE user_id = #{userId}
+    </update>
+
+</mapper>

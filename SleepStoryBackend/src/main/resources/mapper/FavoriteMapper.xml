@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sleepstory.backend.dal.mapper.FavoriteMapper">
+
+    <resultMap id="StoryResultMap" type="com.sleepstory.backend.dal.po.StoryPO">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="category" column="category"/>
+        <result property="duration" column="duration"/>
+        <result property="durationSeconds" column="duration_seconds"/>
+        <result property="icon" column="icon"/>
+        <result property="gradientColors" column="gradient_colors"/>
+        <result property="audioUrl" column="audio_url"/>
+        <result property="isGenerated" column="is_generated"/>
+        <result property="isFavorite" column="is_favorite"/>
+        <result property="rating" column="rating"/>
+        <result property="playCount" column="play_count"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO user_favorites (user_id, story_id, created_at)
+        VALUES (#{userId}, #{storyId}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM user_favorites
+        WHERE user_id = #{userId} AND story_id = #{storyId}
+    </delete>
+
+    <select id="exists" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM user_favorites
+        WHERE user_id = #{userId} AND story_id = #{storyId}
+    </select>
+
+    <select id="selectByUserId" resultMap="StoryResultMap">
+        SELECT s.id, s.title, s.description, s.category, s.duration, s.duration_seconds,
+               s.icon, s.gradient_colors, s.audio_url, s.is_generated, s.is_favorite,
+               s.rating, s.play_count, s.content, s.created_at, s.updated_at
+        FROM user_favorites uf
+        INNER JOIN stories s ON uf.story_id = s.id
+        WHERE uf.user_id = #{userId}
+        ORDER BY uf.created_at DESC
+    </select>
+
+    <select id="countByUserId" resultType="int">
+        SELECT COUNT(*)
+        FROM user_favorites
+        WHERE user_id = #{userId}
+    </select>
+
+</mapper>
