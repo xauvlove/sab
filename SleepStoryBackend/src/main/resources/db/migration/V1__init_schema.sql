@@ -81,10 +81,48 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户资料表';
 
--- 插入示例数据
+-- 用户收藏表
+CREATE TABLE IF NOT EXISTS user_favorites (
+    user_id VARCHAR(64) NOT NULL COMMENT '用户ID',
+    story_id VARCHAR(64) NOT NULL COMMENT '故事ID',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '收藏时间',
+    PRIMARY KEY (user_id, story_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (story_id) REFERENCES stories(id) ON DELETE CASCADE,
+    INDEX idx_user_favorites_user_id (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户收藏表';
+
+-- 播放历史表
+CREATE TABLE IF NOT EXISTS play_history (
+    id VARCHAR(64) PRIMARY KEY COMMENT '记录ID',
+    user_id VARCHAR(64) NOT NULL COMMENT '用户ID',
+    story_id VARCHAR(64) NOT NULL COMMENT '故事ID',
+    duration_listened INT NOT NULL DEFAULT 0 COMMENT '收听时长(秒)',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '播放时间',
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (story_id) REFERENCES stories(id) ON DELETE CASCADE,
+    INDEX idx_play_history_user_id (user_id),
+    INDEX idx_play_history_story_id (story_id),
+    INDEX idx_play_history_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='播放历史表';
+
+-- 用户偏好设置表
+CREATE TABLE IF NOT EXISTS user_preferences (
+    user_id VARCHAR(64) PRIMARY KEY COMMENT '用户ID',
+    dark_mode TINYINT(1) DEFAULT 0 COMMENT '深色模式',
+    auto_close_timer INT DEFAULT 30 COMMENT '自动关闭定时器(分钟)',
+    volume_level INT DEFAULT 50 COMMENT '音量等级',
+    default_play_speed FLOAT DEFAULT 1.0 COMMENT '默认播放速度',
+    enable_notifications TINYINT(1) DEFAULT 1 COMMENT '开启通知',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户偏好设置表';
+
+-- 插入示例故事数据
 INSERT INTO stories (id, title, description, category, duration, duration_seconds, icon, gradient_colors, audio_url, is_generated, is_favorite, rating, play_count, content, created_at, updated_at) VALUES
-('story-001', '月光森林', '在宁静的月光下，漫步在神秘的森林中，聆听大自然的声音', 'NATURE', 'MEDIUM', 600, '🌲', '#1a237e,#4a148c', 'https://example.com/audio/forest.mp3', false, false, 4.8, 1250, '夜幕降临，月光如水般洒在森林中...', NOW(), NOW()),
-('story-002', '星空下的海滩', '躺在柔软的沙滩上，仰望满天繁星，感受海浪的轻抚', 'NATURE', 'SHORT', 300, '🏖️', '#0d47a1,#1565c0', 'https://example.com/audio/beach.mp3', false, false, 4.9, 980, '海浪轻轻拍打着沙滩，发出有节奏的声响...', NOW(), NOW()),
-('story-003', '云端城堡', '漂浮在云端之上的神秘城堡，带你进入一个奇幻的梦境世界', 'FANTASY', 'LONG', 900, '🏰', '#7c4dff,#b388ff', 'https://example.com/audio/castle.mp3', false, false, 4.7, 756, '在云层之上，有一座晶莹剔透的城堡...', NOW(), NOW()),
-('story-004', '正念呼吸', '跟随引导进行深呼吸练习，放松身心，进入深度睡眠', 'MEDITATION', 'SHORT', 180, '🧘', '#00695c,#00897b', 'https://example.com/audio/breathing.mp3', false, false, 4.6, 543, '请找一个舒适的姿势躺下...', NOW(), NOW()),
-('story-005', '雨夜小屋', '窗外下着细雨，你在温暖的小屋里，听着雨声安然入睡', 'NATURE', 'MEDIUM', 720, '🏠', '#263238,#37474f', 'https://example.com/audio/rain.mp3', false, true, 4.9, 2100, '雨滴敲打着窗户，发出轻柔的声响...', NOW(), NOW());
+('story-001', '月光森林', '在宁静的月光下，漫步在神秘的森林中，聆听大自然的声音', 'NATURE', 'MEDIUM', 600, '🌲', '#1a237e,#4a148c', 'https://example.com/audio/forest.mp3', 0, 0, 4.8, 1250, '夜幕降临，月光如水般洒在森林中...', NOW(), NOW()),
+('story-002', '星空下的海滩', '躺在柔软的沙滩上，仰望满天繁星，感受海浪的轻抚', 'NATURE', 'SHORT', 300, '🏖️', '#0d47a1,#1565c0', 'https://example.com/audio/beach.mp3', 0, 0, 4.9, 980, '海浪轻轻拍打着沙滩，发出有节奏的声响...', NOW(), NOW()),
+('story-003', '云端城堡', '漂浮在云端之上的神秘城堡，带你进入一个奇幻的梦境世界', 'FANTASY', 'LONG', 900, '🏰', '#7c4dff,#b388ff', 'https://example.com/audio/castle.mp3', 0, 0, 4.7, 756, '在云层之上，有一座晶莹剔透的城堡...', NOW(), NOW()),
+('story-004', '正念呼吸', '跟随引导进行深呼吸练习，放松身心，进入深度睡眠', 'MEDITATION', 'SHORT', 180, '🧘', '#00695c,#00897b', 'https://example.com/audio/breathing.mp3', 0, 0, 4.6, 543, '请找一个舒适的姿势躺下...', NOW(), NOW()),
+('story-005', '雨夜小屋', '窗外下着细雨，你在温暖的小屋里，听着雨声安然入睡', 'NATURE', 'MEDIUM', 720, '🏠', '#263238,#37474f', 'https://example.com/audio/rain.mp3', 0, 1, 4.9, 2100, '雨滴敲打着窗户，发出轻柔的声响...', NOW(), NOW());

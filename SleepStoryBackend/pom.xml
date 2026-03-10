@@ -64,11 +64,6 @@
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
 
         <!-- Azure Cognitive Services Speech SDK -->
         <dependency>
@@ -165,7 +160,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>dysmsapi20170525</artifactId>
-            <version>2.0.24</version>
+            <version>4.5.0</version>
         </dependency>
 
         <!-- Redis -->
