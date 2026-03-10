@@ -1,8 +1,8 @@
 package com.sleepstory.backend.service.story;
 
-import com.sleepstory.backend.api.dto.request.PublishStoryRequest;
-import com.sleepstory.backend.api.dto.response.CommunityStoryDetailResponse;
-import com.sleepstory.backend.api.dto.response.CommunityStoryResponse;
+import com.sleepstory.backend.api.request.PublishStoryRequest;
+import com.sleepstory.backend.api.response.CommunityStoryDetailResponse;
+import com.sleepstory.backend.api.response.CommunityStoryResponse;
 import com.sleepstory.backend.dal.mapper.CommunityStoryMapper;
 import com.sleepstory.backend.domain.entity.CommunityStory;
 import com.sleepstory.backend.domain.entity.UserProfile;

@@ -1,11 +1,11 @@
 package com.sleepstory.backend.api.controller;
 
 import com.sleepstory.backend.api.dto.Result;
-import com.sleepstory.backend.api.dto.request.LoginRequest;
-import com.sleepstory.backend.api.dto.request.RegisterRequest;
-import com.sleepstory.backend.api.dto.request.SendCodeRequest;
-import com.sleepstory.backend.api.dto.request.SmsLoginRequest;
-import com.sleepstory.backend.api.dto.response.AuthResponse;
+import com.sleepstory.backend.api.request.LoginRequest;
+import com.sleepstory.backend.api.request.RegisterRequest;
+import com.sleepstory.backend.api.request.SendCodeRequest;
+import com.sleepstory.backend.api.request.SmsLoginRequest;
+import com.sleepstory.backend.api.response.AuthResponse;
 import com.sleepstory.backend.infrastructure.security.JwtTokenProvider;
 import com.sleepstory.backend.service.sms.SmsAuthService;
 import com.sleepstory.backend.service.sms.SmsService;

@@ -1,7 +1,7 @@
 package com.sleepstory.backend.service.sms;
 
-import com.sleepstory.backend.api.dto.response.AuthResponse;
-import com.sleepstory.backend.api.dto.request.SmsLoginRequest;
+import com.sleepstory.backend.api.response.AuthResponse;
+import com.sleepstory.backend.api.request.SmsLoginRequest;
 import com.sleepstory.backend.domain.entity.User;
 import com.sleepstory.backend.domain.entity.UserProfile;
 import com.sleepstory.backend.domain.repository.UserProfileRepository;

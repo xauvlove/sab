@@ -1,4 +1,4 @@
-package com.sleepstory.backend.api.dto.request;
+package com.sleepstory.backend.api.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

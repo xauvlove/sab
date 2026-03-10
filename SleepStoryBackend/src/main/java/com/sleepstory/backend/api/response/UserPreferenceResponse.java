@@ -1,4 +1,4 @@
-package com.sleepstory.backend.api.dto.request;
+package com.sleepstory.backend.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,13 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 更新用户偏好设置请求
+ * 用户偏好设置响应
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPreferenceRequest {
+public class UserPreferenceResponse {
 
     /**
      * 深色模式

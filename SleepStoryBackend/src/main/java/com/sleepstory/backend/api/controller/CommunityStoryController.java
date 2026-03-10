@@ -1,9 +1,9 @@
 package com.sleepstory.backend.api.controller;
 
 import com.sleepstory.backend.api.dto.Result;
-import com.sleepstory.backend.api.dto.request.PublishStoryRequest;
-import com.sleepstory.backend.api.dto.response.CommunityStoryDetailResponse;
-import com.sleepstory.backend.api.dto.response.CommunityStoryResponse;
+import com.sleepstory.backend.api.request.PublishStoryRequest;
+import com.sleepstory.backend.api.response.CommunityStoryDetailResponse;
+import com.sleepstory.backend.api.response.CommunityStoryResponse;
 import com.sleepstory.backend.infrastructure.security.JwtTokenProvider;
 import com.sleepstory.backend.service.story.CommunityStoryService;
 import jakarta.validation.Valid;

@@ -1,8 +1,8 @@
 package com.sleepstory.backend.api.controller;
 
 import com.sleepstory.backend.api.dto.Result;
-import com.sleepstory.backend.api.dto.request.FavoriteRequest;
-import com.sleepstory.backend.api.dto.response.StoryListResponse;
+import com.sleepstory.backend.api.request.FavoriteRequest;
+import com.sleepstory.backend.api.response.StoryListResponse;
 import com.sleepstory.backend.service.story.FavoriteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

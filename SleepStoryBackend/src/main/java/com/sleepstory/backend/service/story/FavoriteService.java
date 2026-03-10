@@ -1,6 +1,6 @@
 package com.sleepstory.backend.service.story;
 
-import com.sleepstory.backend.api.dto.response.StoryListResponse;
+import com.sleepstory.backend.api.response.StoryListResponse;
 import com.sleepstory.backend.dal.mapper.FavoriteMapper;
 import com.sleepstory.backend.dal.mapper.StoryMapper;
 import com.sleepstory.backend.dal.po.StoryPO;

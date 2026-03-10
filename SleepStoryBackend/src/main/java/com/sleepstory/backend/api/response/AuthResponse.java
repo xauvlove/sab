@@ -1,4 +1,4 @@
-package com.sleepstory.backend.api.dto.response;
+package com.sleepstory.backend.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

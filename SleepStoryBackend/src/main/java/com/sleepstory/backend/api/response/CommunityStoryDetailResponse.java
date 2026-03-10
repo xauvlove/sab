@@ -1,4 +1,4 @@
-package com.sleepstory.backend.api.dto.response;
+package com.sleepstory.backend.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * 故事列表响应（用于Feed流）
+ * 故事详情响应
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommunityStoryResponse {
+public class CommunityStoryDetailResponse {
 
     /**
      * 故事ID
@@ -32,12 +32,22 @@ public class CommunityStoryResponse {
     private String summary;
 
     /**
+     * 正文内容
+     */
+    private String content;
+
+    /**
+     * 语音配置
+     */
+    private String voiceConfig;
+
+    /**
      * 分类
      */
     private String category;
 
     /**
-     * 标签列表
+     * 标签
      */
     private String tags;
 
@@ -50,6 +60,11 @@ public class CommunityStoryResponse {
      * 播放次数
      */
     private Integer playsCount;
+
+    /**
+     * 创作者ID
+     */
+    private String userId;
 
     /**
      * 创作者昵称
@@ -65,6 +80,11 @@ public class CommunityStoryResponse {
      * 是否已点赞
      */
     private Boolean isLiked;
+
+    /**
+     * 是否为自己的故事
+     */
+    private Boolean isOwner;
 
     /**
      * 创建时间

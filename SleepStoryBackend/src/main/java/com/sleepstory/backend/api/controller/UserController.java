@@ -1,9 +1,9 @@
 package com.sleepstory.backend.api.controller;
 
 import com.sleepstory.backend.api.dto.Result;
-import com.sleepstory.backend.api.dto.request.UserPreferenceRequest;
-import com.sleepstory.backend.api.dto.response.UserPreferenceResponse;
-import com.sleepstory.backend.api.dto.response.UserStatsResponse;
+import com.sleepstory.backend.api.request.UserPreferenceRequest;
+import com.sleepstory.backend.api.response.UserPreferenceResponse;
+import com.sleepstory.backend.api.response.UserStatsResponse;
 import com.sleepstory.backend.infrastructure.security.JwtTokenProvider;
 import com.sleepstory.backend.service.user.UserService;
 import jakarta.validation.Valid;

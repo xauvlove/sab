@@ -1,8 +1,8 @@
 package com.sleepstory.backend.service.user;
 
-import com.sleepstory.backend.api.dto.response.AuthResponse;
-import com.sleepstory.backend.api.dto.request.LoginRequest;
-import com.sleepstory.backend.api.dto.request.RegisterRequest;
+import com.sleepstory.backend.api.response.AuthResponse;
+import com.sleepstory.backend.api.request.LoginRequest;
+import com.sleepstory.backend.api.request.RegisterRequest;
 import com.sleepstory.backend.domain.entity.User;
 import com.sleepstory.backend.domain.entity.UserProfile;
 import com.sleepstory.backend.domain.repository.UserProfileRepository;
@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**

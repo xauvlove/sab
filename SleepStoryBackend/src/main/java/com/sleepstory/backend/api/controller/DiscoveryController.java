@@ -1,11 +1,10 @@
 package com.sleepstory.backend.api.controller;
 
 import com.sleepstory.backend.api.dto.Result;
-import com.sleepstory.backend.api.dto.response.DiscoveryResponse;
-import com.sleepstory.backend.api.dto.response.StoryDetailResponse;
-import com.sleepstory.backend.api.dto.response.StoryListResponse;
+import com.sleepstory.backend.api.response.DiscoveryResponse;
+import com.sleepstory.backend.api.response.StoryDetailResponse;
+import com.sleepstory.backend.api.response.StoryListResponse;
 import com.sleepstory.backend.service.story.DiscoveryService;
-import com.sleepstory.backend.service.story.FavoriteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
