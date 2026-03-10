@@ -171,12 +171,14 @@ class SettingsScreen extends StatelessWidget {
     BuildContext context, {
     required IconData icon,
     required String title,
+    String? subtitle,
     required bool value,
     required ValueChanged<bool> onChanged,
   }) {
     return ListTile(
       leading: Icon(icon, color: AppColors.textSecondary),
       title: Text(title),
+      subtitle: subtitle != null ? Text(subtitle) : null,
       trailing: Switch(
         value: value,
         onChanged: onChanged,

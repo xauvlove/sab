@@ -1,4 +1,4 @@
-import '../models/play_history_model.dart';
+import '../../data/models/play_history_model.dart';
 
 /// 播放历史仓储接口
 abstract class PlayHistoryRepository {

@@ -6,7 +6,7 @@ import '../../domain/repositories/play_history_repository.dart';
 
 /// 播放历史仓储实现
 class PlayHistoryRepositoryImpl implements PlayHistoryRepository {
-  final DioClient _dioClient = DioClient();
+  DioClient get _dioClient => DioClient.instance;
 
   @override
   Future<List<PlayHistoryModel>> getPlayHistory({
@@ -14,8 +14,8 @@ class PlayHistoryRepositoryImpl implements PlayHistoryRepository {
     int offset = 0,
   }) async {
     try {
-      final response = await _dioClient.get(
-        '${ApiConstants.baseUrl}${ApiConstants.playHistory}',
+      final response = await _dioClient.dio.get(
+        ApiConstants.playHistory,
         queryParameters: {'limit': limit, 'offset': offset},
       );
 
@@ -35,8 +35,8 @@ class PlayHistoryRepositoryImpl implements PlayHistoryRepository {
     required int durationListened,
   }) async {
     try {
-      await _dioClient.post(
-        '${ApiConstants.baseUrl}${ApiConstants.playHistory}',
+      await _dioClient.dio.post(
+        ApiConstants.playHistory,
         data: {
           'storyId': storyId,
           'duration': durationListened,
@@ -50,8 +50,8 @@ class PlayHistoryRepositoryImpl implements PlayHistoryRepository {
   @override
   Future<void> deletePlayHistory(String historyId) async {
     try {
-      await _dioClient.delete(
-        '${ApiConstants.baseUrl}${ApiConstants.playHistory}/$historyId',
+      await _dioClient.dio.delete(
+        '${ApiConstants.playHistory}/$historyId',
       );
     } on DioException catch (e) {
       throw _handleError(e);
@@ -61,8 +61,8 @@ class PlayHistoryRepositoryImpl implements PlayHistoryRepository {
   @override
   Future<void> clearPlayHistory() async {
     try {
-      await _dioClient.delete(
-        '${ApiConstants.baseUrl}${ApiConstants.playHistory}',
+      await _dioClient.dio.delete(
+        ApiConstants.playHistory,
       );
     } on DioException catch (e) {
       throw _handleError(e);
