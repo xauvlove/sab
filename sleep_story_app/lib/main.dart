@@ -5,6 +5,7 @@ import 'presentation/providers/auth_provider.dart';
 import 'presentation/providers/home_provider.dart';
 import 'presentation/providers/community_provider.dart';
 import 'presentation/providers/player_provider.dart';
+import 'presentation/providers/favorite_provider.dart';
 import 'presentation/screens/auth/login_screen.dart';
 import 'presentation/screens/home/main_screen.dart';
 
@@ -25,6 +26,7 @@ class SleepStoryApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => HomeProvider()),
         ChangeNotifierProvider(create: (_) => CommunityProvider()),
         ChangeNotifierProvider(create: (_) => PlayerProvider()),
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
       ],
       child: MaterialApp(
         title: '睡眠故事',

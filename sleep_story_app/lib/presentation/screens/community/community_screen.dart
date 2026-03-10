@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../data/models/community_model.dart';
 import '../../providers/community_provider.dart';
 import '../../providers/player_provider.dart';
 
@@ -247,6 +248,3 @@ class _CommunityScreenState extends State<CommunityScreen> {
     );
   }
 }
-
-// 导入 PublishStoryRequest
-import '../../../data/models/community_model.dart';

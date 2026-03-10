@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../data/models/story_model.dart';
 import '../../providers/home_provider.dart';
 import '../../widgets/story_card.dart';
 
@@ -38,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.error_outline, size: 48, color: AppColors.error),
+                    const Icon(Icons.error_outline, size: 48, color: AppColors.error),
                     const SizedBox(height: 16),
                     Text(homeProvider.errorMessage ?? '加载失败'),
                     const SizedBox(height: 16),
@@ -61,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.all(16),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.nightlight_round,
                             color: AppColors.primary,
                             size: 28,
@@ -91,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: ActionChip(
                               label: Text(category.name),
                               backgroundColor: AppColors.surface,
-                              labelStyle: TextStyle(color: AppColors.textPrimary),
+                              labelStyle: const TextStyle(color: AppColors.textPrimary),
                               onPressed: () {
                                 // TODO: 跳转到分类页面
                               },

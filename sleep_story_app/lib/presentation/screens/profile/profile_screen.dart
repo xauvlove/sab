@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
+import '../favorites/favorites_screen.dart';
+import '../settings/settings_screen.dart';
 
 /// 个人中心页面
 class ProfileScreen extends StatelessWidget {
@@ -12,6 +14,17 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('我的'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const SettingsScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, _) {
@@ -81,19 +94,31 @@ class ProfileScreen extends StatelessWidget {
                 context,
                 icon: Icons.history,
                 title: '播放历史',
-                onTap: () {},
+                onTap: () {
+                  // TODO: 跳转到播放历史
+                },
               ),
               _buildMenuItem(
                 context,
                 icon: Icons.favorite,
                 title: '我的收藏',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const FavoritesScreen()),
+                  );
+                },
               ),
               _buildMenuItem(
                 context,
                 icon: Icons.settings,
                 title: '设置',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                  );
+                },
               ),
               _buildMenuItem(
                 context,

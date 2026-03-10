@@ -1,4 +1,4 @@
-import '../models/community_model.dart';
+import '../../data/models/community_model.dart';
 
 /// 社区仓储接口
 abstract class CommunityRepository {

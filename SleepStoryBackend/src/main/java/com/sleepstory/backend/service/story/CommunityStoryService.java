@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 他人创作故事服务
@@ -26,6 +27,8 @@ public class CommunityStoryService {
 
     private final CommunityStoryMapper communityStoryMapper;
     private final UserProfileMapper userProfileMapper;
+    // 假设我们有一个文件存储服务，这里只是示意
+    // private final FileStorageService fileStorageService;
 
     /**
      * 发布故事

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_verification_code/flutter_verification_code.dart';
-import '../../core/theme/app_theme.dart';
-import '../providers/auth_provider.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../providers/auth_provider.dart';
 
 /// 登录页面
 class LoginScreen extends StatefulWidget {
@@ -132,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   maxLength: 6,
                   decoration: InputDecoration(
                     labelText: '验证码',
-                    prefixIcon: Icon(Icons.lock_outline),
+                    prefixIcon: const Icon(Icons.lock_outline),
                     counterText: '',
                     suffixIcon: TextButton(
                       onPressed: _countdown > 0 ? null : _sendCode,

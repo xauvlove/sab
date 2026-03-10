@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../../data/models/story_model.dart';
+import '../../data/models/story_model.dart' as models;
 import '../../data/repositories/story_repository_impl.dart';
 
 /// 首页状态
@@ -15,15 +15,15 @@ class HomeProvider extends ChangeNotifier {
   final StoryRepositoryImpl _storyRepository = StoryRepositoryImpl();
 
   HomeStatus _status = HomeStatus.initial;
-  List<Story> _featured = [];
-  List<Category> _categories = [];
-  List<Story> _recommended = [];
+  List<models.Story> _featured = [];
+  List<models.Category> _categories = [];
+  List<models.Story> _recommended = [];
   String? _errorMessage;
 
   HomeStatus get status => _status;
-  List<Story> get featured => _featured;
-  List<Category> get categories => _categories;
-  List<Story> get recommended => _recommended;
+  List<models.Story> get featured => _featured;
+  List<models.Category> get categories => _categories;
+  List<models.Story> get recommended => _recommended;
   String? get errorMessage => _errorMessage;
 
   /// 加载首页数据
@@ -51,7 +51,7 @@ class HomeProvider extends ChangeNotifier {
   }
 
   /// 根据分类获取故事
-  Future<List<Story>> getStoriesByCategory(String categoryId) async {
+  Future<List<models.Story>> getStoriesByCategory(String categoryId) async {
     try {
       return await _storyRepository.getStoriesByCategory(categoryId);
     } catch (e) {
@@ -60,7 +60,7 @@ class HomeProvider extends ChangeNotifier {
   }
 
   /// 搜索故事
-  Future<List<Story>> searchStories(String keyword) async {
+  Future<List<models.Story>> searchStories(String keyword) async {
     try {
       return await _storyRepository.searchStories(keyword);
     } catch (e) {
