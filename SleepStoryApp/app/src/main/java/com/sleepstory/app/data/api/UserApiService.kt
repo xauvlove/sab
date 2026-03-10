@@ -4,6 +4,8 @@ import com.sleepstory.app.data.model.ApiResponse
 import com.sleepstory.app.data.model.AuthResponse
 import com.sleepstory.app.data.model.LoginRequest
 import com.sleepstory.app.data.model.RegisterRequest
+import com.sleepstory.app.data.model.SendCodeRequest
+import com.sleepstory.app.data.model.SmsLoginRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -15,7 +17,6 @@ import retrofit2.http.Query
  * 用户API服务接口
  */
 interface UserApiService {
-
     /**
      * 用户注册
      */
@@ -30,6 +31,22 @@ interface UserApiService {
     @POST("api/auth/login")
     suspend fun login(
         @Body request: LoginRequest
+    ): Response<ApiResponse<AuthResponse>>
+
+    /**
+     * 发送验证码
+     */
+    @POST("api/auth/sms/send")
+    suspend fun sendVerificationCode(
+        @Body request: SendCodeRequest
+    ): Response<ApiResponse<Unit>>
+
+    /**
+     * 验证码登录/注册
+     */
+    @POST("api/auth/sms/login")
+    suspend fun smsLogin(
+        @Body request: SmsLoginRequest
     ): Response<ApiResponse<AuthResponse>>
 
     /**
@@ -70,5 +87,13 @@ interface UserApiService {
         password: String
     ): Response<ApiResponse<AuthResponse>> {
         return login(LoginRequest(phone, password))
+    }
+
+    suspend fun sendVerificationCode(phone: String): Response<ApiResponse<Unit>> {
+        return sendVerificationCode(SendCodeRequest(phone))
+    }
+
+    suspend fun smsLogin(phone: String, code: String): Response<ApiResponse<AuthResponse>> {
+        return smsLogin(SmsLoginRequest(phone, code))
     }
 }

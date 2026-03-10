@@ -36,6 +36,21 @@ data class LoginRequest(
 )
 
 /**
+ * 发送验证码请求
+ */
+data class SendCodeRequest(
+    val phone: String
+)
+
+/**
+ * 验证码登录请求
+ */
+data class SmsLoginRequest(
+    val phone: String,
+    val code: String
+)
+
+/**
  * API通用响应包装
  */
 data class ApiResponse<T>(

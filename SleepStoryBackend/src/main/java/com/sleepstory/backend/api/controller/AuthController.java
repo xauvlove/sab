@@ -1,6 +1,8 @@
 package com.sleepstory.backend.api.controller;
 
 import com.sleepstory.backend.api.dto.*;
+import com.sleepstory.backend.service.sms.SmsAuthService;
+import com.sleepstory.backend.service.sms.SmsService;
 import com.sleepstory.backend.service.user.UserAuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserAuthService userAuthService;
+    private final SmsService smsService;
+    private final SmsAuthService smsAuthService;
 
     /**
      * 用户注册
@@ -60,6 +64,46 @@ public class AuthController {
     }
 
     /**
+     * 发送验证码
+     */
+    @PostMapping("/sms/send")
+    public Result<Void> sendVerificationCode(
+            @Valid @RequestBody SendCodeRequest request) {
+        try {
+            log.info("Send SMS code request for phone: {}", request.getPhone());
+            smsService.sendVerificationCode(request.getPhone());
+            return Result.success(null);
+        } catch (RuntimeException e) {
+            log.warn("Send SMS failed: {}", e.getMessage());
+            return Result.badRequest(e.getMessage());
+        } catch (Exception e) {
+            log.error("Send SMS error: {}", e.getMessage(), e);
+            return Result.error("发送验证码失败，请稍后重试");
+        }
+    }
+
+    /**
+     * 验证码登录/注册
+     */
+    @PostMapping("/sms/login")
+    public Result<AuthResponse> smsLogin(
+            @Valid @RequestBody SmsLoginRequest request,
+            HttpServletRequest httpRequest) {
+        try {
+            log.info("SMS login request for phone: {}", request.getPhone());
+            String clientIp = getClientIp(httpRequest);
+            AuthResponse response = smsAuthService.loginOrRegister(request, clientIp);
+            return Result.success(response);
+        } catch (RuntimeException e) {
+            log.warn("SMS login failed: {}", e.getMessage());
+            return Result.badRequest(e.getMessage());
+        } catch (Exception e) {
+            log.error("SMS login error: {}", e.getMessage(), e);
+            return Result.error("登录失败，请稍后重试");
+        }
+    }
+
+    /**
      * 获取当前用户信息
      */
     @GetMapping("/me")
@@ -96,10 +140,8 @@ public class AuthController {
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 return Result.unauthorized("未提供有效的认证信息");
             }
-
             String token = authHeader.substring(7);
             String userId = extractUserIdFromToken(token);
-
             AuthResponse response = userAuthService.refreshToken(userId);
             return Result.success(response);
         } catch (RuntimeException e) {

@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.sleepstory.app.ui.screens.assessment.AssessmentScreen
 import com.sleepstory.app.ui.screens.auth.LoginScreen
 import com.sleepstory.app.ui.screens.auth.RegisterScreen
+import com.sleepstory.app.ui.screens.auth.SmsLoginScreen
 import com.sleepstory.app.ui.screens.discover.DiscoverScreen
 import com.sleepstory.app.ui.screens.generate.GenerateScreen
 import com.sleepstory.app.ui.screens.generating.GeneratingScreen
@@ -22,6 +23,7 @@ sealed class Screen(val route: String) {
     object Splash : Screen("splash")
     object Welcome : Screen("welcome")
     object Login : Screen("login")
+    object SmsLogin : Screen("sms_login")
     object Register : Screen("register")
     object Assessment : Screen("assessment")
     object Home : Screen("home")
@@ -77,9 +79,27 @@ fun SleepStoryNavHost(navController: NavHostController) {
                 onNavigateToRegister = {
                     navController.navigate(Screen.Register.route)
                 },
+                onNavigateToSmsLogin = {
+                    navController.navigate(Screen.SmsLogin.route)
+                },
                 onLoginSuccess = {
                     navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Login.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Screen.SmsLogin.route) {
+            SmsLoginScreen(
+                onNavigateToPasswordLogin = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.SmsLogin.route) { inclusive = true }
+                    }
+                },
+                onLoginSuccess = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.SmsLogin.route) { inclusive = true }
                     }
                 }
             )

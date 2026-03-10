@@ -17,23 +17,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.delay
 
 /**
- * 登录页面
+ * 验证码登录页面
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(
-    onNavigateToRegister: () -> Unit,
-    onNavigateToSmsLogin: () -> Unit,
+fun SmsLoginScreen(
+    onNavigateToPasswordLogin: () -> Unit,
     onLoginSuccess: () -> Unit,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: SmsLoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
@@ -64,7 +62,7 @@ fun LoginScreen(
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(60.dp))
 
             // Logo和标题
             Icon(
@@ -77,14 +75,14 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "欢迎回来",
+                text = "手机号登录",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
 
             Text(
-                text = "继续您的助眠之旅",
+                text = "未注册的手机号将自动创建账号",
                 fontSize = 16.sp,
                 color = Color(0xFF9fa8da),
                 textAlign = TextAlign.Center
@@ -93,12 +91,15 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(48.dp))
 
             // 登录表单
-            LoginForm(
+            SmsLoginForm(
                 phone = uiState.phone,
                 onPhoneChange = viewModel::onPhoneChange,
-                password = uiState.password,
-                onPasswordChange = viewModel::onPasswordChange,
+                code = uiState.code,
+                onCodeChange = viewModel::onCodeChange,
+                countdownSeconds = uiState.countdownSeconds,
+                isCountingDown = uiState.isCountingDown,
                 isLoading = uiState.isLoading,
+                onSendCode = viewModel::sendCode,
                 onSubmit = viewModel::login
             )
 
@@ -113,49 +114,22 @@ fun LoginScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            // 验证码登录按钮
-            TextButton(
-                onClick = onNavigateToSmsLogin,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Smartphone,
-                        contentDescription = null,
-                        tint = Color(0xFF7986cb),
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "使用手机验证码登录",
-                        color = Color(0xFF7986cb),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 注册链接
+            // 密码登录链接
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "还没有账号？",
+                    text = "使用密码登录？",
                     color = Color(0xFF9fa8da),
                     fontSize = 14.sp
                 )
-                TextButton(onClick = onNavigateToRegister) {
+                TextButton(onClick = onNavigateToPasswordLogin) {
                     Text(
-                        text = "立即注册",
+                        text = "点击切换",
                         color = Color(0xFF7986cb),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium
@@ -170,15 +144,19 @@ fun LoginScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LoginForm(
+private fun SmsLoginForm(
     phone: String,
     onPhoneChange: (String) -> Unit,
-    password: String,
-    onPasswordChange: (String) -> Unit,
+    code: String,
+    onCodeChange: (String) -> Unit,
+    countdownSeconds: Int,
+    isCountingDown: Boolean,
     isLoading: Boolean,
+    onSendCode: () -> Unit,
     onSubmit: () -> Unit
 ) {
-    var passwordVisible by remember { mutableStateOf(false) }
+    // 验证手机号格式
+    val isPhoneValid = phone.length == 11 && phone.startsWith("1")
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -218,13 +196,17 @@ private fun LoginForm(
             shape = RoundedCornerShape(12.dp)
         )
 
-        // 密码输入
+        // 验证码输入
         OutlinedTextField(
-            value = password,
-            onValueChange = onPasswordChange,
+            value = code,
+            onValueChange = { value ->
+                if (value.length <= 6 && value.all { it.isDigit() }) {
+                    onCodeChange(value)
+                }
+            },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("密码") },
-            placeholder = { Text("请输入密码") },
+            label = { Text("验证码") },
+            placeholder = { Text("请输入验证码") },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Lock,
@@ -233,17 +215,28 @@ private fun LoginForm(
                 )
             },
             trailingIcon = {
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(
-                        imageVector = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                        contentDescription = if (passwordVisible) "隐藏密码" else "显示密码",
-                        tint = Color(0xFF9fa8da)
-                    )
+                // 发送验证码按钮
+                TextButton(
+                    onClick = onSendCode,
+                    enabled = isPhoneValid && !isCountingDown && !isLoading
+                ) {
+                    if (isCountingDown) {
+                        Text(
+                            text = "${countdownSeconds}s",
+                            color = Color(0xFF9fa8da),
+                            fontSize = 14.sp
+                        )
+                    } else {
+                        Text(
+                            text = "获取验证码",
+                            color = if (isPhoneValid) Color(0xFF7986cb) else Color(0xFF9fa8da),
+                            fontSize = 14.sp
+                        )
+                    }
                 }
             },
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
+                keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done
             ),
             singleLine = true,
@@ -271,7 +264,7 @@ private fun LoginForm(
                 containerColor = Color(0xFF7986cb),
                 disabledContainerColor = Color(0xFF7986cb).copy(alpha = 0.5f)
             ),
-            enabled = !isLoading && phone.isNotBlank() && password.isNotBlank()
+            enabled = !isLoading && isPhoneValid && code.length == 6
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
@@ -281,7 +274,7 @@ private fun LoginForm(
                 )
             } else {
                 Text(
-                    text = "登录",
+                    text = "登录/注册",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )

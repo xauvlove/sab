@@ -154,7 +154,7 @@ public class UserAuthService {
      * 生成默认昵称
      */
     private String generateDefaultNickname() {
-        return "晚安旅人" + System.currentTimeMillis() % 10000;
+            return "晚安旅人" + System.currentTimeMillis() % 10000;
     }
 
     /**
