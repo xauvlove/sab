@@ -35,6 +35,8 @@ public class UserAuthService {
 
     /**
      * 用户注册
+     * @param request 注册请求（手机号、密码、昵称）
+     * @return 认证响应（包含Token和用户信息）
      */
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -76,6 +78,9 @@ public class UserAuthService {
 
     /**
      * 用户登录
+     * @param request 登录请求（手机号、密码）
+     * @param clientIp 客户端IP地址
+     * @return 认证响应（包含Token和用户信息）
      */
     public AuthResponse login(LoginRequest request, String clientIp) {
         // 查找用户

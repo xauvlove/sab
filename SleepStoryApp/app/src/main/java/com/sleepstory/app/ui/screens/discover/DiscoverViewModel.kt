@@ -31,6 +31,9 @@ class DiscoverViewModel @Inject constructor(
         loadDiscoveryData()
     }
 
+    /**
+     * 加载发现页数据（热门标签、分类、排行榜）
+     */
     fun loadDiscoveryData() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
@@ -60,6 +63,9 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 刷新数据
+     */
     fun refresh() {
         loadDiscoveryData()
     }

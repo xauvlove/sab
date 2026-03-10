@@ -25,6 +25,8 @@ public class DiscoveryController {
 
     /**
      * 获取发现页数据
+     * @param authHeader Authorization头（可选，用于判断用户登录状态）
+     * @return 发现页数据（热门标签、分类、排行榜故事）
      */
     @GetMapping
     public Result<DiscoveryResponse> getDiscoveryData(
@@ -41,6 +43,9 @@ public class DiscoveryController {
 
     /**
      * 搜索故事
+     * @param keyword 搜索关键词
+     * @param authHeader Authorization头（可选）
+     * @return 故事列表
      */
     @GetMapping("/search")
     public Result<List<StoryListResponse>> search(
@@ -57,6 +62,9 @@ public class DiscoveryController {
 
     /**
      * 获取分类下的故事
+     * @param category 分类名称（如：NATURE、FANTASY）
+     * @param authHeader Authorization头（可选）
+     * @return 故事列表
      */
     @GetMapping("/category/{category}")
     public Result<List<StoryListResponse>> getByCategory(

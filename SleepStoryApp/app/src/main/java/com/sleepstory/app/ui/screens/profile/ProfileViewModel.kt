@@ -30,6 +30,9 @@ class ProfileViewModel @Inject constructor(
         loadUserData()
     }
 
+    /**
+     * 加载用户数据（统计信息和偏好设置）
+     */
     fun loadUserData() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
@@ -74,6 +77,9 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 更新用户偏好设置
+     */
     fun updatePreferences(preferences: UserPreferenceModel) {
         viewModelScope.launch {
             try {
@@ -90,11 +96,17 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 退出登录
+     */
     fun logout() {
         tokenRepository.clearToken()
         _uiState.value = ProfileUiState()
     }
 
+    /**
+     * 刷新用户数据
+     */
     fun refresh() {
         loadUserData()
     }

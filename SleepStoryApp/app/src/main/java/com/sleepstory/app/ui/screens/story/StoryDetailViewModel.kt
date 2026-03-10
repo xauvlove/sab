@@ -24,6 +24,9 @@ class StoryDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(StoryDetailUiState())
     val uiState: StateFlow<StoryDetailUiState> = _uiState.asStateFlow()
 
+    /**
+     * 加载故事详情
+     */
     fun loadStoryDetail(storyId: String) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
@@ -50,6 +53,9 @@ class StoryDetailViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 切换收藏状态
+     */
     fun toggleFavorite(storyId: String) {
         viewModelScope.launch {
             try {

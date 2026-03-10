@@ -24,7 +24,10 @@ public class FavoriteController {
     private final FavoriteService favoriteService;
 
     /**
-     * 切换收藏状态
+     * 切换收藏状态（收藏/取消收藏）
+     * @param request 收藏请求（故事ID）
+     * @param authHeader Authorization头（Bearer Token）
+     * @return 收藏状态和收藏数量
      */
     @PostMapping("/toggle")
     public Result<Map<String, Object>> toggleFavorite(
@@ -54,6 +57,8 @@ public class FavoriteController {
 
     /**
      * 获取用户收藏列表
+     * @param authHeader Authorization头（Bearer Token）
+     * @return 收藏的故事列表
      */
     @GetMapping("/list")
     public Result<List<StoryListResponse>> getFavorites(
@@ -73,7 +78,10 @@ public class FavoriteController {
     }
 
     /**
-     * 检查是否已收藏
+     * 检查故事是否已收藏
+     * @param storyId 故事ID
+     * @param authHeader Authorization头（可选）
+     * @return 是否已收藏
      */
     @GetMapping("/check/{storyId}")
     public Result<Map<String, Boolean>> checkFavorite(

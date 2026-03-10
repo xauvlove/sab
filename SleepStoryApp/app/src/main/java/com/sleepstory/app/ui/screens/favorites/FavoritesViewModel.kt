@@ -28,6 +28,9 @@ class FavoritesViewModel @Inject constructor(
         loadFavorites()
     }
 
+    /**
+     * 加载用户收藏列表
+     */
     fun loadFavorites() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
@@ -62,6 +65,9 @@ class FavoritesViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 切换收藏状态（收藏/取消收藏）
+     */
     fun toggleFavorite(storyId: String) {
         viewModelScope.launch {
             try {
@@ -79,6 +85,9 @@ class FavoritesViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 刷新收藏列表
+     */
     fun refresh() {
         loadFavorites()
     }

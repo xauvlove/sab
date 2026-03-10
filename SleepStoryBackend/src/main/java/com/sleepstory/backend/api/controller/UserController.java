@@ -27,6 +27,8 @@ public class UserController {
 
     /**
      * 获取用户睡眠统计
+     * @param authHeader Authorization头（Bearer Token）
+     * @return 用户统计信息（听书时长、连续天数、成功率等）
      */
     @GetMapping("/stats")
     public Result<UserStatsResponse> getUserStats(
@@ -47,6 +49,8 @@ public class UserController {
 
     /**
      * 获取用户偏好设置
+     * @param authHeader Authorization头（Bearer Token）
+     * @return 用户偏好设置（深色模式、定时器、音量等）
      */
     @GetMapping("/preferences")
     public Result<UserPreferenceResponse> getPreferences(
@@ -67,6 +71,9 @@ public class UserController {
 
     /**
      * 更新用户偏好设置
+     * @param request 偏好设置请求
+     * @param authHeader Authorization头（Bearer Token）
+     * @return 更新后的偏好设置
      */
     @PutMapping("/preferences")
     public Result<UserPreferenceResponse> updatePreferences(
@@ -88,6 +95,9 @@ public class UserController {
 
     /**
      * 记录播放历史
+     * @param request 播放历史请求（故事ID、播放时长）
+     * @param authHeader Authorization头（Bearer Token）
+     * @return 操作结果
      */
     @PostMapping("/play-history")
     public Result<Void> recordPlayHistory(
@@ -116,6 +126,10 @@ public class UserController {
 
     /**
      * 获取播放历史
+     * @param authHeader Authorization头（Bearer Token）
+     * @param limit 返回记录数（默认20）
+     * @param offset 偏移量（默认0）
+     * @return 播放历史列表
      */
     @GetMapping("/play-history")
     public Result<List<Map<String, Object>>> getPlayHistory(

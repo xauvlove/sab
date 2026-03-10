@@ -42,14 +42,23 @@ class SmsLoginViewModel @Inject constructor(
 
     private var countdownJob: Job? = null
 
+    /**
+     * 更新手机号
+     */
     fun onPhoneChange(phone: String) {
         _uiState.update { it.copy(phone = phone, errorMessage = null) }
     }
 
+    /**
+     * 更新验证码输入
+     */
     fun onCodeChange(code: String) {
         _uiState.update { it.copy(code = code, errorMessage = null) }
     }
 
+    /**
+     * 发送验证码
+     */
     fun sendCode() {
         val currentState = _uiState.value
 
@@ -93,6 +102,9 @@ class SmsLoginViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 开始倒计时（60秒）
+     */
     private fun startCountdown() {
         countdownJob?.cancel()
         countdownJob = viewModelScope.launch {
@@ -106,6 +118,9 @@ class SmsLoginViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 验证码登录
+     */
     fun login() {
         val currentState = _uiState.value
 

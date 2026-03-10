@@ -33,6 +33,8 @@ public class AuthController {
 
     /**
      * 用户注册
+     * @param request 注册请求（包含手机号、密码、可选昵称）
+     * @return 认证响应（Token和用户信息）
      */
     @PostMapping("/register")
     public Result<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -51,6 +53,9 @@ public class AuthController {
 
     /**
      * 用户登录
+     * @param request 登录请求（手机号和密码）
+     * @param httpRequest HTTP请求（用于获取客户端IP）
+     * @return 认证响应（Token和用户信息）
      */
     @PostMapping("/login")
     public Result<AuthResponse> login(
@@ -72,6 +77,8 @@ public class AuthController {
 
     /**
      * 发送验证码
+     * @param request 发送请求（包含手机号）
+     * @return 操作结果
      */
     @PostMapping("/sms/send")
     public Result<Void> sendVerificationCode(
@@ -91,6 +98,9 @@ public class AuthController {
 
     /**
      * 验证码登录/注册
+     * @param request 登录请求（手机号和验证码）
+     * @param httpRequest HTTP请求（用于获取客户端IP）
+     * @return 认证响应（Token和用户信息）
      */
     @PostMapping("/sms/login")
     public Result<AuthResponse> smsLogin(
@@ -112,6 +122,8 @@ public class AuthController {
 
     /**
      * 获取当前用户信息
+     * @param authHeader Authorization头（Bearer Token）
+     * @return 用户基本信息
      */
     @GetMapping("/me")
     public Result<AuthResponse.UserInfo> getCurrentUser(
@@ -137,6 +149,8 @@ public class AuthController {
 
     /**
      * 刷新Token
+     * @param authHeader Authorization头（Bearer Token）
+     * @return 新的认证响应
      */
     @PostMapping("/refresh")
     public Result<AuthResponse> refreshToken(
@@ -160,6 +174,8 @@ public class AuthController {
 
     /**
      * 检查手机号是否已注册
+     * @param phone 手机号
+     * @return 是否已注册（true=已注册，false=未注册）
      */
     @GetMapping("/check-phone")
     public Result<Boolean> checkPhone(@RequestParam String phone) {
