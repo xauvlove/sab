@@ -4,6 +4,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
 import '../favorites/favorites_screen.dart';
 import '../settings/settings_screen.dart';
+import '../history/play_history_screen.dart';
 
 /// 个人中心页面
 class ProfileScreen extends StatelessWidget {
@@ -95,7 +96,10 @@ class ProfileScreen extends StatelessWidget {
                 icon: Icons.history,
                 title: '播放历史',
                 onTap: () {
-                  // TODO: 跳转到播放历史
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PlayHistoryScreen()),
+                  );
                 },
               ),
               _buildMenuItem(

@@ -10,15 +10,22 @@ class AppColors {
   static const Color primaryLight = Color(0xFFA5B4FC);
   static const Color primaryDark = Color(0xFF6366F1);
 
-  // Background colors
+  // Background colors - Dark
   static const Color background = Color(0xFF0F172A); // Deep Midnight Blue
   static const Color surface = Color(0xFF1E293B); // Dark Slate
   static const Color surfaceLight = Color(0xFF334155);
 
-  // Text colors
+  // Text colors - Dark
   static const Color textPrimary = Color(0xFFF1F5F9); // Off-white
   static const Color textSecondary = Color(0xFF94A3B8); // Muted Blue-Grey
   static const Color textHint = Color(0xFF64748B);
+
+  // Light theme colors
+  static const Color backgroundLight = Color(0xFFF8FAFC); // Light background
+  static const Color surfaceLightTheme = Color(0xFFFFFFFF); // White surface
+  static const Color surfaceLightSecondary = Color(0xFFF1F5F9); // Light grey
+  static const Color textPrimaryLight = Color(0xFF1E293B); // Dark text
+  static const Color textSecondaryLight = Color(0xFF64748B); // Grey text
 
   // Accent colors
   static const Color accent = Color(0xFF818CF8);
@@ -199,6 +206,168 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.surface,
         contentTextStyle: GoogleFonts.nunito(color: AppColors.textPrimary),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+
+  /// 浅色主题
+  static ThemeData get lightTheme {
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      primaryColor: AppColors.primary,
+      scaffoldBackgroundColor: AppColors.backgroundLight,
+      colorScheme: const ColorScheme.light(
+        primary: AppColors.primary,
+        secondary: AppColors.accent,
+        surface: AppColors.surfaceLightTheme,
+        error: AppColors.error,
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.surfaceLightTheme,
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: GoogleFonts.nunito(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimaryLight,
+        ),
+        iconTheme: const IconThemeData(color: AppColors.textPrimaryLight),
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: AppColors.surfaceLightTheme,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.textSecondaryLight,
+        type: BottomNavigationBarType.fixed,
+        elevation: 8,
+      ),
+      cardTheme: CardThemeData(
+        color: AppColors.surfaceLightTheme,
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.surfaceLightSecondary,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.error, width: 1),
+        ),
+        hintStyle: const TextStyle(color: AppColors.textSecondaryLight),
+        labelStyle: const TextStyle(color: AppColors.textSecondaryLight),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: GoogleFonts.nunito(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.primary,
+          textStyle: GoogleFonts.nunito(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      textTheme: TextTheme(
+        headlineLarge: GoogleFonts.nunito(
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+          color: AppColors.textPrimaryLight,
+        ),
+        headlineMedium: GoogleFonts.nunito(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: AppColors.textPrimaryLight,
+        ),
+        headlineSmall: GoogleFonts.nunito(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimaryLight,
+        ),
+        titleLarge: GoogleFonts.nunito(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimaryLight,
+        ),
+        titleMedium: GoogleFonts.nunito(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: AppColors.textPrimaryLight,
+        ),
+        titleSmall: GoogleFonts.nunito(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: AppColors.textPrimaryLight,
+        ),
+        bodyLarge: GoogleFonts.nunito(
+          fontSize: 16,
+          color: AppColors.textPrimaryLight,
+        ),
+        bodyMedium: GoogleFonts.nunito(
+          fontSize: 14,
+          color: AppColors.textPrimaryLight,
+        ),
+        bodySmall: GoogleFonts.nunito(
+          fontSize: 12,
+          color: AppColors.textSecondaryLight,
+        ),
+        labelLarge: GoogleFonts.nunito(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimaryLight,
+        ),
+        labelMedium: GoogleFonts.nunito(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: AppColors.textSecondaryLight,
+        ),
+        labelSmall: GoogleFonts.nunito(
+          fontSize: 10,
+          color: AppColors.textSecondaryLight,
+        ),
+      ),
+      iconTheme: const IconThemeData(
+        color: AppColors.textPrimaryLight,
+        size: 24,
+      ),
+      dividerTheme: const DividerThemeData(
+        color: AppColors.surfaceLightSecondary,
+        thickness: 1,
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: AppColors.surfaceLightTheme,
+        contentTextStyle: GoogleFonts.nunito(color: AppColors.textPrimaryLight),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),

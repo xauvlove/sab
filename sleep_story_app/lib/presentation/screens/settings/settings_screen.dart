@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/theme_provider.dart';
 
 /// 设置页面
 class SettingsScreen extends StatelessWidget {
@@ -15,6 +16,21 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          // 显示设置
+          _buildSectionHeader(context, '显示设置'),
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, _) {
+              return _buildSwitchItem(
+                context,
+                icon: Icons.dark_mode,
+                title: '深色模式',
+                subtitle: themeProvider.isDarkMode ? '已开启' : '已关闭',
+                value: themeProvider.isDarkMode,
+                onChanged: (value) => themeProvider.toggleDarkMode(),
+              );
+            },
+          ),
+
           // 播放设置
           _buildSectionHeader(context, '播放设置'),
           _buildSettingItem(

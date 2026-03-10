@@ -31,7 +31,7 @@ class ApiConstants {
   static const String userProfile = '/user/profile';
   static const String userStats = '/user/stats';
   static const String userPreferences = '/user/preferences';
-  static const String playHistory = '/user/history';
+  static const String playHistory = '/user/play-history';
 
   // Community endpoints
   static const String communityStories = '/community/stories';
