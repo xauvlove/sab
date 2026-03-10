@@ -2,8 +2,8 @@
 sleepstory:
   aliyun:
     sms:
-      access-key-id: LTAI5tEEZ9MJzFQP72zVmk3m
-      access-key-secret: cFC4K035BnB7JuSZgvCI3kGI2NVRay
+      access-key-id: test
+      access-key-secret: test
       endpoint: dypnsapi.aliyuncs.com
       region-id: cn-hangzhou
       # 短信签名（在阿里云控制台获取）
