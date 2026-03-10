@@ -1,4 +1,4 @@
-import '../models/story_model.dart';
+import '../../data/models/story_model.dart';
 
 /// 故事仓储接口
 abstract class StoryRepository {
