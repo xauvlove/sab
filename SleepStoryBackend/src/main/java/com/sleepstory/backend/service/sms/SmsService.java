@@ -5,10 +5,12 @@ import com.aliyun.dypnsapi20170525.models.CheckSmsVerifyCodeRequest;
 import com.aliyun.dypnsapi20170525.models.CheckSmsVerifyCodeResponse;
 import com.aliyun.dypnsapi20170525.models.SendSmsVerifyCodeRequest;
 import com.aliyun.dypnsapi20170525.models.SendSmsVerifyCodeResponse;
+import com.google.common.primitives.Longs;
 import com.sleepstory.backend.api.exception.BusinessException;
 import com.sleepstory.backend.infrastructure.config.AliyunSmsConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.util.Integers;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -77,13 +79,13 @@ public class SmsService {
                     // 使用占位符，让阿里云自动生成验证码
                     .setTemplateParam("{\"code\":\"##code##\",\"min\":\"" + (smsConfig.getValidTime() / 60) + "\"}")
                     // 设置验证码长度
-                    .setCodeLength(smsConfig.getCodeLength())
+                    .setCodeLength(smsConfig.getCodeLength().longValue())
                     // 设置验证码有效时长（15分钟=900秒）
-                    .setValidTime(smsConfig.getValidTime())
+                    .setValidTime(smsConfig.getValidTime().longValue())
                     // 设置发送间隔
-                    .setInterval(smsConfig.getInterval())
+                    .setInterval(smsConfig.getInterval().longValue())
                     // 设置验证码类型为纯数字
-                    .setCodeType(1)
+                    .setCodeType(1L)
                     // 不返回验证码（我们通过阿里云API验证）
                     .setReturnVerifyCode(false);
 
@@ -99,7 +101,7 @@ public class SmsService {
                 return true;
             } else {
                 log.error("验证码发送失败: {} - {}", phone, response.getBody().getMessage());
-                throw new BusinessException(response.getBody().getCode(), "短信发送失败: " + response.getBody().getMessage());
+                throw new BusinessException(-1, "短信发送失败: " + response.getBody().getMessage());
             }
         } catch (BusinessException e) {
             throw e;

@@ -1,7 +1,6 @@
 package com.sleepstory.backend.infrastructure.config;
 
 import com.aliyun.dypnsapi20170525.Client;
-import com.aliyun.dypnsapi20170525.ClientBuilder;
 import com.aliyun.teaopenapi.models.Config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -76,6 +75,6 @@ public class AliyunSmsConfig {
                 .setAccessKeySecret(accessKeySecret)
                 .setEndpoint(endpoint)
                 .setRegionId(regionId);
-        return ClientBuilder.build(config);
+        return new Client(config);
     }
 }
