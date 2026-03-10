@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sleepstory.backend.dal.mapper.StoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.sleepstory.backend.dal.po.StoryPO">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="category" column="category"/>
+        <result property="duration" column="duration"/>
+        <result property="durationSeconds" column="duration_seconds"/>
+        <result property="icon" column="icon"/>
+        <result property="gradientColors" column="gradient_colors"/>
+        <result property="audioUrl" column="audio_url"/>
+        <result property="isGenerated" column="is_generated"/>
+        <result property="isFavorite" column="is_favorite"/>
+        <result property="rating" column="rating"/>
+        <result property="playCount" column="play_count"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, title, description, category, duration, duration_seconds, icon, gradient_colors,
+        audio_url, is_generated, is_favorite, rating, play_count, content, created_at, updated_at
+    </sql>
+
+    <insert id="insert" parameterType="com.sleepstory.backend.dal.po.StoryPO">
+        INSERT INTO stories (id, title, description, category, duration, duration_seconds,
+                             icon, gradient_colors, audio_url, is_generated, is_favorite,
+                             rating, play_count, content, created_at, updated_at)
+        VALUES (#{id}, #{title}, #{description}, #{category}, #{duration}, #{durationSeconds},
+                #{icon}, #{gradientColors}, #{audioUrl}, #{isGenerated}, #{isFavorite},
+                #{rating}, #{playCount}, #{content}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update" parameterType="com.sleepstory.backend.dal.po.StoryPO">
+        UPDATE stories
+        SET title = #{title},
+            description = #{description},
+            category = #{category},
+            duration = #{duration},
+            duration_seconds = #{durationSeconds},
+            icon = #{icon},
+            gradient_colors = #{gradientColors},
+            audio_url = #{audioUrl},
+            is_generated = #{isGenerated},
+            is_favorite = #{isFavorite},
+            rating = #{rating},
+            play_count = #{playCount},
+            content = #{content},
+            updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM stories
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByCategory" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM stories
+        WHERE category = #{category}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectRecommendedStories" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM stories
+        WHERE is_generated = false
+        ORDER BY rating DESC, play_count DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectTopStories" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM stories
+        ORDER BY play_count DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="searchByKeyword" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM stories
+        WHERE title LIKE CONCAT('%', #{keyword}, '%')
+           OR description LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <select id="selectFavorites" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM stories
+        WHERE is_favorite = true
+        ORDER BY updated_at DESC
+    </select>
+
+    <update id="incrementPlayCount">
+        UPDATE stories
+        SET play_count = play_count + 1
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateFavoriteStatus">
+        UPDATE stories
+        SET is_favorite = #{isFavorite}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM stories WHERE id = #{id}
+    </delete>
+
+</mapper>

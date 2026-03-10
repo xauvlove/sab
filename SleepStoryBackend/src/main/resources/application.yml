@@ -17,19 +17,14 @@ spring:
       minimum-idle: 5
       connection-timeout: 30000
 
-  redis:
-    host: localhost
-    port: 6379
-    database: 0
-    timeout: 5000
-
   servlet:
     multipart:
       max-file-size: 50MB
       max-request-size: 100MB
 
-# MyBatis配置 - 使用注解方式，不需要XML
+# MyBatis配置 - 使用XML Mapper
 mybatis:
+  mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.sleepstory.backend.dal.po
   configuration:
     map-underscore-to-camel-case: true
@@ -94,6 +89,7 @@ spring:
       mode: always
 
 mybatis:
+  mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.sleepstory.backend.dal.po
   configuration:
     map-underscore-to-camel-case: true

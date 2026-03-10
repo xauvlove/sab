@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sleepstory.backend.dal.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.sleepstory.backend.dal.po.UserPO">
+        <id property="id" column="id"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="passwordHash" column="password_hash"/>
+        <result property="nickname" column="nickname"/>
+        <result property="avatarUrl" column="avatar_url"/>
+        <result property="status" column="status"/>
+        <result property="lastLoginAt" column="last_login_at"/>
+        <result property="lastLoginIp" column="last_login_ip"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, phone, email, password_hash, nickname, avatar_url, status,
+        last_login_at, last_login_ip, created_at, updated_at
+    </sql>
+
+    <insert id="insert" parameterType="com.sleepstory.backend.dal.po.UserPO">
+        INSERT INTO users (id, phone, email, password_hash, nickname, avatar_url, status,
+                           last_login_at, last_login_ip, created_at, updated_at)
+        VALUES (#{id}, #{phone}, #{email}, #{passwordHash}, #{nickname}, #{avatarUrl}, #{status},
+                #{lastLoginAt}, #{lastLoginIp}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update" parameterType="com.sleepstory.backend.dal.po.UserPO">
+        UPDATE users
+        SET phone = #{phone},
+            email = #{email},
+            password_hash = #{passwordHash},
+            nickname = #{nickname},
+            avatar_url = #{avatarUrl},
+            status = #{status},
+            last_login_at = #{lastLoginAt},
+            last_login_ip = #{lastLoginIp},
+            updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByPhone" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM users
+        WHERE phone = #{phone}
+    </select>
+
+    <select id="selectByEmail" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM users
+        WHERE email = #{email}
+    </select>
+
+    <select id="selectByStatus" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM users
+        WHERE status = #{status}
+    </select>
+
+    <select id="countByPhone" resultType="long">
+        SELECT COUNT(*) FROM users WHERE phone = #{phone}
+    </select>
+
+    <select id="countByEmail" resultType="long">
+        SELECT COUNT(*) FROM users WHERE email = #{email}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE users
+        SET status = #{status}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateLoginInfo">
+        UPDATE users
+        SET last_login_at = #{loginAt},
+            last_login_ip = #{loginIp},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM users WHERE id = #{id}
+    </delete>
+
+</mapper>
