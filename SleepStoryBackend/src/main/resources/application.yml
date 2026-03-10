@@ -28,9 +28,8 @@ spring:
       max-file-size: 50MB
       max-request-size: 100MB
 
-# MyBatis配置
+# MyBatis配置 - 使用注解方式，不需要XML
 mybatis:
-  mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.sleepstory.backend.dal.po
   configuration:
     map-underscore-to-camel-case: true
@@ -81,7 +80,7 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:h2:mem:sleepstory;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:mem:sleepstory;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -95,7 +94,6 @@ spring:
       mode: always
 
 mybatis:
-  mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.sleepstory.backend.dal.po
   configuration:
     map-underscore-to-camel-case: true
