@@ -2,91 +2,26 @@ server:
   port: 8080
   servlet:
     context-path: /api
+
 spring:
   application:
     name: sleepstory-backend
+  # 导入拆分的配置文件
+  config:
+    import:
+      - classpath:application-database.yml
+      - classpath:application-redis.yml
+      - classpath:application-aliyun.yml
+  # 启用MVC异常处理
+  mvc:
+    throw-exception-if-no-handler-found: true
   # SQL初始化配置
   sql:
     init:
       mode: always
       schema-locations: classpath:schema.sql
       continue-on-error: false
-  datasource:
-    url: jdbc:mysql://localhost:3306/sleepstory?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: root
-    password: ${DB_PASSWORD:password}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      maximum-pool-size: 20
-      minimum-idle: 5
-      connection-timeout: 30000
   servlet:
     multipart:
       max-file-size: 50MB
       max-request-size: 100MB
-
-# MyBatis配置 - 使用XML Mapper
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.sleepstory.backend.dal.po
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-# 日志配置
-logging:
-  level:
-    com.sleepstory.backend: DEBUG
-    com.sleepstory.backend.dal.mapper: DEBUG
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-
-# 自定义配置
-sleepstory:
-  openai:
-    api-key: ${OPENAI_API_KEY:your-api-key}
-    model: gpt-4
-    max-tokens: 2000
-    temperature: 0.8
-  azure:
-    speech:
-      key: ${AZURE_SPEECH_KEY:your-speech-key}
-      region: ${AZURE_SPEECH_REGION:eastasia}
-      voice: zh-CN-XiaoxiaoNeural
-      sample-rate: 24000
-  aws:
-    access-key: ${AWS_ACCESS_KEY:your-access-key}
-    secret-key: ${AWS_SECRET_KEY:your-secret-key}
-    region: ap-northeast-1
-    s3:
-      bucket: sleepstory-audio
-  audio:
-    output-path: ./audio
-    format: mp3
-    bitrate: 128k
-  jwt:
-    secret: ${JWT_SECRET:SleepStorySecretKeyForJwtTokenGeneration2024}
-    expiration: 86400000  # 24小时
-  # 阿里云短信配置
-  aliyun:
-    sms:
-      access-key-id: ${ALIYUN_ACCESS_KEY_ID:your-access-key-id}
-      access-key-secret: ${ALIYUN_ACCESS_KEY_SECRET:your-access-key-secret}
-      endpoint: dysmsapi.aliyuncs.com
-      region-id: cn-hangzhou
-      sign-name: ${ALIYUN_SMS_SIGN_NAME:您的签名名称}
-      template-code: ${ALIYUN_SMS_TEMPLATE_CODE:SMS_123456789}
-  # Redis配置
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD:}
-      database: 0
-      timeout: 5000ms
-      lettuce:
-        pool:
-          max-active: 8
-          max-idle: 8
-          min-idle: 0
-          max-wait: -1ms

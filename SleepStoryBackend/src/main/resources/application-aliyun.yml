@@ -1,0 +1,20 @@
+# 阿里云短信配置（融合认证服务）
+sleepstory:
+  aliyun:
+    sms:
+      access-key-id: LTAI5tEEZ9MJzFQP72zVmk3m
+      access-key-secret: cFC4K035BnB7JuSZgvCI3kGI2NVRay
+      endpoint: dypnsapi.aliyuncs.com
+      region-id: cn-hangzhou
+      # 短信签名（在阿里云控制台获取）
+      sign-name: ${ALIYUN_SMS_SIGN_NAME:速通互联验证码}
+      # 短信模板Code（在阿里云控制台获取）
+      template-code: ${ALIYUN_SMS_TEMPLATE_CODE:100001}
+      # 验证码长度（4-8位，默认6位）
+      code-length: 6
+      # 验证码有效时长（秒，默认900秒=15分钟）
+      valid-time: 900
+      # 发送间隔（秒，默认60秒）
+      interval: 60
+      # 每天发送次数限制
+      daily-limit: 10

@@ -1,8 +1,11 @@
 package com.sleepstory.backend.service.sms;
 
-import com.aliyun.dysmsapi20170525.Client;
-import com.aliyun.dysmsapi20170525.models.SendSmsRequest;
-import com.aliyun.dysmsapi20170525.models.SendSmsResponse;
+import com.aliyun.dypnsapi20170525.Client;
+import com.aliyun.dypnsapi20170525.models.CheckSmsVerifyCodeRequest;
+import com.aliyun.dypnsapi20170525.models.CheckSmsVerifyCodeResponse;
+import com.aliyun.dypnsapi20170525.models.SendSmsVerifyCodeRequest;
+import com.aliyun.dypnsapi20170525.models.SendSmsVerifyCodeResponse;
+import com.sleepstory.backend.api.exception.BusinessException;
 import com.sleepstory.backend.infrastructure.config.AliyunSmsConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +15,9 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 短信服务
- * 处理验证码的发送和验证
+ * 短信服务（阿里云融合认证）
+ * 使用 SendSmsVerifyCode API 发送短信验证码
+ * 使用 CheckSmsVerifyCode API 核验短信验证码
  */
 @Slf4j
 @Service
@@ -30,19 +34,9 @@ public class SmsService {
     private static final String SMS_CODE_PREFIX = "sms:code:";
 
     /**
-     * 验证码有效期（秒）- 5分钟
+     * 发送间隔key前缀
      */
-    private static final long SMS_CODE_EXPIRE_SECONDS = 300;
-
-    /**
-     * 发送验证码间隔（秒）- 60秒
-     */
-    private static final long SMS_SEND_INTERVAL_SECONDS = 60;
-
-    /**
-     * 每天发送次数限制
-     */
-    private static final int SMS_DAILY_LIMIT = 10;
+    private static final String SMS_INTERVAL_PREFIX = "sms:interval:";
 
     /**
      * 每天发送次数key前缀
@@ -51,48 +45,52 @@ public class SmsService {
 
     /**
      * 发送验证码
+     * 使用阿里云融合认证的 SendSmsVerifyCode API
      *
      * @param phone 手机号
      * @return 发送是否成功
      */
     public boolean sendVerificationCode(String phone) {
         // 检查发送间隔
-        String intervalKey = SMS_CODE_PREFIX + phone + ":interval";
+        String intervalKey = SMS_INTERVAL_PREFIX + phone;
         Boolean intervalSet = redisTemplate.opsForValue().setIfAbsent(
-                intervalKey, "1", SMS_SEND_INTERVAL_SECONDS, TimeUnit.SECONDS);
-
+                intervalKey, "1", smsConfig.getInterval(), TimeUnit.SECONDS);
         if (Boolean.FALSE.equals(intervalSet)) {
             log.warn("验证码发送过于频繁: {}", phone);
-            throw new RuntimeException("发送过于频繁，请" + SMS_SEND_INTERVAL_SECONDS + "秒后重试");
+            throw new BusinessException(429, "发送过于频繁，请" + smsConfig.getInterval() + "秒后重试");
         }
 
         // 检查每日发送次数
         String dailyCountKey = SMS_DAILY_COUNT_PREFIX + phone + ":" + getTodayKey();
         Integer dailyCount = (Integer) redisTemplate.opsForValue().get(dailyCountKey);
-        if (dailyCount != null && dailyCount >= SMS_DAILY_LIMIT) {
+        if (dailyCount != null && dailyCount >= smsConfig.getDailyLimit()) {
             log.warn("验证码每日发送次数已达上限: {}", phone);
-            throw new RuntimeException("今日发送次数已达上限，请明天再试");
+            throw new BusinessException(429, "今日发送次数已达上限，请明天再试");
         }
 
-        // 生成6位随机验证码
-        String code = generateCode();
-        log.info("生成验证码: {} -> {}", phone, code);
-
         try {
-            // 调用阿里云发送短信
-            SendSmsRequest request = new SendSmsRequest()
-                    .setPhoneNumbers(phone)
+            // 构建请求参数
+            SendSmsVerifyCodeRequest request = new SendSmsVerifyCodeRequest()
+                    .setPhoneNumber(phone)
                     .setSignName(smsConfig.getSignName())
                     .setTemplateCode(smsConfig.getTemplateCode())
-                    .setTemplateParam("{\"code\":\"" + code + "\"}");
+                    // 使用占位符，让阿里云自动生成验证码
+                    .setTemplateParam("{\"code\":\"##code##\",\"min\":\"" + (smsConfig.getValidTime() / 60) + "\"}")
+                    // 设置验证码长度
+                    .setCodeLength(smsConfig.getCodeLength())
+                    // 设置验证码有效时长（15分钟=900秒）
+                    .setValidTime(smsConfig.getValidTime())
+                    // 设置发送间隔
+                    .setInterval(smsConfig.getInterval())
+                    // 设置验证码类型为纯数字
+                    .setCodeType(1)
+                    // 不返回验证码（我们通过阿里云API验证）
+                    .setReturnVerifyCode(false);
 
-            SendSmsResponse response = smsClient.sendSms(request);
+            // 发送短信
+            SendSmsVerifyCodeResponse response = smsClient.sendSmsVerifyCode(request);
 
             if ("OK".equals(response.getBody().getCode())) {
-                // 存储验证码到Redis
-                String codeKey = SMS_CODE_PREFIX + phone;
-                redisTemplate.opsForValue().set(codeKey, code, SMS_CODE_EXPIRE_SECONDS, TimeUnit.SECONDS);
-
                 // 更新每日发送次数
                 redisTemplate.opsForValue().increment(dailyCountKey);
                 redisTemplate.expire(dailyCountKey, 24 * 60 * 60, TimeUnit.SECONDS);
@@ -101,49 +99,64 @@ public class SmsService {
                 return true;
             } else {
                 log.error("验证码发送失败: {} - {}", phone, response.getBody().getMessage());
-                throw new RuntimeException("短信发送失败: " + response.getBody().getMessage());
+                throw new BusinessException(response.getBody().getCode(), "短信发送失败: " + response.getBody().getMessage());
             }
+        } catch (BusinessException e) {
+            throw e;
         } catch (Exception e) {
             log.error("验证码发送异常: {}", phone, e);
-            throw new RuntimeException("短信发送异常: " + e.getMessage());
+            throw new BusinessException("短信发送异常: " + e.getMessage());
         }
     }
 
     /**
      * 验证验证码
+     * 使用阿里云融合认证的 CheckSmsVerifyCode API 进行核销
      *
      * @param phone 手机号
      * @param code  验证码
      * @return 验证是否成功
      */
     public boolean verifyCode(String phone, String code) {
-        String codeKey = SMS_CODE_PREFIX + phone;
-        String storedCode = (String) redisTemplate.opsForValue().get(codeKey);
-
-        if (storedCode == null) {
-            log.warn("验证码已过期: {}", phone);
-            throw new RuntimeException("验证码已过期，请重新获取");
+        // 检查是否获取过验证码
+        String intervalKey = SMS_INTERVAL_PREFIX + phone;
+        if (Boolean.FALSE.equals(redisTemplate.hasKey(intervalKey))) {
+            log.warn("未获取过验证码: {}", phone);
+            throw new BusinessException(400, "请先获取验证码");
         }
 
-        if (!storedCode.equals(code)) {
-            log.warn("验证码错误: {} - 输入: {}, 正确: {}", phone, code, storedCode);
-            throw new RuntimeException("验证码错误");
+        try {
+            // 构建核验请求参数
+            CheckSmsVerifyCodeRequest request = new CheckSmsVerifyCodeRequest()
+                    .setPhoneNumber(phone)
+                    .setVerifyCode(code);
+
+            // 调用阿里云API核验验证码
+            CheckSmsVerifyCodeResponse response = smsClient.checkSmsVerifyCode(request);
+
+            if ("OK".equals(response.getBody().getCode())) {
+                // 获取核验结果
+                String verifyResult = response.getBody().getModel().getVerifyResult();
+
+                if ("PASS".equals(verifyResult)) {
+                    log.info("验证码核销成功: {}", phone);
+                    // 核销成功后删除发送记录，防止重复使用
+                    redisTemplate.delete(intervalKey);
+                    return true;
+                } else {
+                    log.warn("验证码核销失败: {} - 结果: {}", phone, verifyResult);
+                    throw new BusinessException(400, "验证码错误");
+                }
+            } else {
+                log.error("验证码核销失败: {} - {}", phone, response.getBody().getMessage());
+                throw new BusinessException(400, "验证码验证失败: " + response.getBody().getMessage());
+            }
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("验证码核销异常: {}", phone, e);
+            throw new BusinessException("验证码验证异常: " + e.getMessage());
         }
-
-        // 验证成功后删除验证码，防止重复使用
-        redisTemplate.delete(codeKey);
-        log.info("验证码验证成功: {}", phone);
-        return true;
-    }
-
-    /**
-     * 生成6位随机验证码
-     */
-    private String generateCode() {
-        // 使用更安全的随机数生成器
-        java.security.SecureRandom random = new java.security.SecureRandom();
-        int code = 100000 + random.nextInt(900000); // 生成100000-999999之间的随机数
-        return String.valueOf(code);
     }
 
     /**
